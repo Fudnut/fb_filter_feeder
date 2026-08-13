@@ -225,6 +225,7 @@
     nestedObjectCandidates: 0,
     scrambledHeaderCandidates: 0,
     ctaButtonMarkerMatches: 0,
+    ctaButtonGroupOriginProtections: 0,
     directAdLabelMatches: 0,
     paidForByDisclosureMatches: 0,
     glyphDecodeMatches: 0,
@@ -1218,6 +1219,21 @@
   // folded into the generic attribute-count check the audit ruled out.
   function ctaButtonAdSignal(story) {
     if (!story.querySelector("[data-ad-rendering-role^='cta']")) {
+      return null;
+    }
+    /*
+     * Facebook's ad-rendering-role component family (cta-, profile_name,
+     * story_message, like_button, comment_button) is not ad-exclusive after
+     * all - a followed Page's own post can render through the same
+     * component inside a joined group (live capture 2026-08-13: "J&F
+     * Pressure Cleaning" post, Send Message CTA, zero Sponsored disclosure
+     * anywhere, hasGroupOrigin true). Reuse the same group-origin guard
+     * suggestionHeaderAction already applies to Follow so a real in-group ad
+     * still falls through to the text-disclosure detectors below, which
+     * Meta's policy requires every paid placement to render regardless.
+     */
+    if (hasGroupOrigin(story)) {
+      counters.ctaButtonGroupOriginProtections += 1;
       return null;
     }
     counters.ctaButtonMarkerMatches += 1;
@@ -3157,6 +3173,8 @@
         customWordFilterCandidates: counters.customWordFilterCandidates,
         customWordFilterMatches: counters.customWordFilterMatches,
         groupOriginProtections: counters.groupOriginProtections,
+        ctaButtonGroupOriginProtections:
+          counters.ctaButtonGroupOriginProtections,
         foreignActorProtections: counters.foreignActorProtections,
         activityMatches: counters.activityMatches,
         marketplaceLabelCandidates: counters.marketplaceLabelCandidates,

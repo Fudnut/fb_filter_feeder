@@ -6,6 +6,20 @@ distributed zip is named to match, so a filename always tells you exactly
 which build it is. Everything before that shipped under 0.1.0.1, so those
 entries are grouped together and dated instead.
 
+## 0.1.0.12 - 2026-08-13
+- Fixed a false-positive Sponsored classification: `[data-ad-rendering-role^='cta']`
+  (the CTA-button-marker signal, `ctaButtonAdSignal`) isn't ad-exclusive after
+  all - a followed Page's own post (Send Message CTA, no visible Sponsored
+  disclosure anywhere) rendered through the same component family when
+  relayed into the main feed from a joined group (live report 2026-08-13:
+  "J&F Pressure Cleaning" post). The signal now reuses the existing
+  `hasGroupOrigin` guard - already used to protect the Suggested classifier
+  from Follow-in-group false positives - so a group-originated post no
+  longer trips the CTA marker alone; a real in-group ad still falls through
+  to the text-disclosure detectors Meta's policy requires it to render.
+  New `ctaButtonGroupOriginProtections` diagnostic counter confirms when the
+  guard fires.
+
 ## 0.1.0.11 - 2026-08-12
 - Amended before first deploy (still 0.1.0.11, no version bump): Export
   DOM now falls back to a geometry-only capture (large, visible,

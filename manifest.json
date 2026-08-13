@@ -4,7 +4,7 @@
   "name": "FB Feed Filter",
   "short_name": "FB Feed Filter",
   "description": "Filters Facebook ads, sponsored and suggested posts, Reels, Marketplace posts, Stories, sidebar suggestions and custom words.",
-  "version": "0.1.0.11",
+  "version": "0.1.0.12",
   "minimum_chrome_version": "109",
   "permissions": [
     "activeTab",
