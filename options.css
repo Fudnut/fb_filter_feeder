@@ -1,0 +1,249 @@
+:root {
+  color-scheme: light dark;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  color: #172033;
+  background: #eef3f9;
+}
+
+main {
+  width: min(720px, calc(100% - 32px));
+  margin: 40px auto;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.close-options {
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.mark {
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border-radius: 14px;
+  color: #fff;
+  background: linear-gradient(145deg, #2f89ff, #0756bf);
+  font-size: 24px;
+  font-weight: 800;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+h1 {
+  font-size: 24px;
+}
+
+h2 {
+  margin-bottom: 6px;
+  font-size: 17px;
+}
+
+header p,
+.status-card p,
+.scope-card p {
+  margin-top: 5px;
+  color: #5f6b7d;
+  line-height: 1.55;
+}
+
+.tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  padding: 4px;
+  border: 1px solid #d6deea;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 9px 10px;
+  border: 0;
+  border-radius: 9px;
+  color: #5f6b7d;
+  background: transparent;
+  font: 700 13px/1.2 inherit;
+  cursor: pointer;
+}
+
+.tab-button[aria-selected="true"] {
+  color: #fff;
+  background: #1267d6;
+}
+
+.status-card,
+.word-card,
+.scope-card,
+.activity-card {
+  margin-bottom: 16px;
+  padding: 20px;
+  border: 1px solid #d6deea;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 12px 32px rgb(31 53 84 / 8%);
+}
+
+.activity-card p {
+  margin-top: 5px;
+  color: #5f6b7d;
+  line-height: 1.55;
+}
+
+.activity-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.activity-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 12px;
+  border: 1px solid #e1e7f0;
+  border-radius: 10px;
+}
+
+.activity-row small {
+  display: block;
+  margin-top: 2px;
+  color: #5f6b7d;
+}
+
+.activity-row input {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
+.word-card textarea {
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px;
+  resize: vertical;
+  border: 1px solid #b8c4d5;
+  border-radius: 10px;
+  font: 14px/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+}
+
+.word-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+}
+
+.word-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.word-actions button {
+  padding: 9px 12px;
+  border: 0;
+  border-radius: 8px;
+  color: #fff;
+  background: #1267d6;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.word-actions button.secondary {
+  color: #263348;
+  background: #e4eaf2;
+}
+
+#wordFilterCount,
+.save-status {
+  color: #5f6b7d;
+  font-size: 13px;
+}
+
+.status-row {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.status-row input {
+  width: 20px;
+  height: 20px;
+}
+
+.status {
+  display: inline-block;
+  margin-top: 16px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  color: #704d00;
+  background: #fff1be;
+  font-size: 12px;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #edf3ff;
+    background: #111722;
+  }
+
+  .tabs {
+    border-color: #344055;
+    background: #1c2533;
+  }
+
+  .tab-button {
+    color: #afbad0;
+  }
+
+  .status-card,
+  .word-card,
+  .scope-card,
+  .activity-card {
+    border-color: #344055;
+    background: #1c2533;
+  }
+
+  .word-actions button.secondary {
+    color: #e8eef9;
+    background: #344055;
+  }
+
+  header p,
+  .status-card p,
+  .scope-card p,
+  .activity-card p {
+    color: #afbad0;
+  }
+
+  .activity-row {
+    border-color: #344055;
+  }
+
+  .activity-row small {
+    color: #afbad0;
+  }
+}

@@ -1,0 +1,343 @@
+/* One presentation layer consumes classifier state; detectors never hide DOM. */
+html[data-fffc-enabled="1"][data-fffc-mode="hide"][data-fffc-hide-sponsored="1"]
+  :is([data-fffc-kind="ad"], [data-fffc-kind="sponsored"]):not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="hide"][data-fffc-hide-suggested="1"]
+  [data-fffc-kind="suggested"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="hide"][data-fffc-hide-reels="1"]
+  [data-fffc-reel="1"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="hide"][data-fffc-enable-word-filters="1"]
+  [data-fffc-kind="word-filter"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="hide"]
+  [data-fffc-activity="1"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="hide"]
+  [data-fffc-kind="ai-content"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"]:is([data-fffc-mode="hide"], [data-fffc-mode="collapse"])
+  [data-fffc-right-rail-sponsored="1"],
+html[data-fffc-enabled="1"]:is([data-fffc-mode="hide"], [data-fffc-mode="collapse"])[data-fffc-hide-stories="1"]
+  [data-fffc-stories-tray="1"],
+html[data-fffc-enabled="1"]:is([data-fffc-mode="hide"], [data-fffc-mode="collapse"])[data-fffc-hide-suggested-groups="1"]
+  [data-fffc-suggested-groups="1"],
+html[data-fffc-enabled="1"]:is([data-fffc-mode="hide"], [data-fffc-mode="collapse"])[data-fffc-hide-group-chats="1"]
+  [data-fffc-group-chats="1"] {
+  display: none !important;
+}
+
+/*
+ * Activity matches are already gated per-kind in content.js before they
+ * ever reach the DOM (see activitySignal), so - unlike the four toggles
+ * above - the selector here needs no matching data-fffc-hide-* condition.
+ */
+
+.fffc-reveal-control {
+  display: none !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"][data-fffc-hide-sponsored="1"]
+  :is([data-fffc-kind="ad"], [data-fffc-kind="sponsored"]):not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"][data-fffc-hide-suggested="1"]
+  [data-fffc-kind="suggested"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"][data-fffc-hide-reels="1"]
+  [data-fffc-reel="1"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"][data-fffc-enable-word-filters="1"]
+  [data-fffc-kind="word-filter"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"]
+  [data-fffc-activity="1"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"]
+  [data-fffc-kind="ai-content"]:not([data-fffc-revealed="1"]) {
+  position: relative !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 62px !important;
+  max-height: 62px !important;
+  overflow: hidden !important;
+  border: 2px solid #c7352c !important;
+  border-radius: 8px !important;
+  background: #fff3f2 !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"][data-fffc-hide-suggested="1"]
+  [data-fffc-kind="suggested"]:not([data-fffc-revealed="1"]) {
+  border-color: #c27700 !important;
+  background: #fff8e6 !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"][data-fffc-hide-reels="1"]
+  [data-fffc-reel="1"]:not([data-fffc-revealed="1"]) {
+  border-color: #087f8c !important;
+  background: #e9fbfd !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"][data-fffc-enable-word-filters="1"]
+  [data-fffc-kind="word-filter"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"]
+  [data-fffc-activity="1"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"]
+  [data-fffc-kind="ai-content"]:not([data-fffc-revealed="1"]) {
+  border-color: #8a3ffc !important;
+  background: #f5efff !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"][data-fffc-hide-sponsored="1"]
+  :is([data-fffc-kind="ad"], [data-fffc-kind="sponsored"]):not([data-fffc-revealed="1"])
+  > :not(.fffc-reveal-control),
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"][data-fffc-hide-suggested="1"]
+  [data-fffc-kind="suggested"]:not([data-fffc-revealed="1"])
+  > :not(.fffc-reveal-control),
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"][data-fffc-hide-reels="1"]
+  [data-fffc-reel="1"]:not([data-fffc-revealed="1"])
+  > :not(.fffc-reveal-control),
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"][data-fffc-enable-word-filters="1"]
+  [data-fffc-kind="word-filter"]:not([data-fffc-revealed="1"])
+  > :not(.fffc-reveal-control),
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"]
+  [data-fffc-activity="1"]:not([data-fffc-revealed="1"])
+  > :not(.fffc-reveal-control),
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"]
+  [data-fffc-kind="ai-content"]:not([data-fffc-revealed="1"])
+  > :not(.fffc-reveal-control) {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"][data-fffc-hide-sponsored="1"]
+  :is([data-fffc-kind="ad"], [data-fffc-kind="sponsored"]):not([data-fffc-revealed="1"])
+  > .fffc-reveal-control,
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"][data-fffc-hide-suggested="1"]
+  [data-fffc-kind="suggested"]:not([data-fffc-revealed="1"])
+  > .fffc-reveal-control,
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"][data-fffc-hide-reels="1"]
+  [data-fffc-reel="1"]:not([data-fffc-revealed="1"])
+  > .fffc-reveal-control,
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"][data-fffc-enable-word-filters="1"]
+  [data-fffc-kind="word-filter"]:not([data-fffc-revealed="1"])
+  > .fffc-reveal-control,
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"]
+  [data-fffc-activity="1"]:not([data-fffc-revealed="1"])
+  > .fffc-reveal-control,
+html[data-fffc-enabled="1"][data-fffc-mode="collapse"]
+  [data-fffc-kind="ai-content"]:not([data-fffc-revealed="1"])
+  > .fffc-reveal-control {
+  display: flex !important;
+}
+
+.fffc-reveal-control {
+  position: absolute !important;
+  z-index: 2147483647 !important;
+  inset: 0 !important;
+  box-sizing: border-box !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  padding: 10px 12px !important;
+  color: #7a1d17 !important;
+  background: #fff3f2 !important;
+  font: 600 12px/1.35 system-ui, -apple-system, "Segoe UI", sans-serif !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+
+[data-fffc-kind="suggested"] > .fffc-reveal-control {
+  color: #6b4300 !important;
+  background: #fff8e6 !important;
+}
+
+[data-fffc-reel="1"] > .fffc-reveal-control {
+  color: #075e68 !important;
+  background: #e9fbfd !important;
+}
+
+[data-fffc-kind="word-filter"] > .fffc-reveal-control,
+[data-fffc-activity="1"] > .fffc-reveal-control,
+[data-fffc-kind="ai-content"] > .fffc-reveal-control {
+  color: #5520a8 !important;
+  background: #f5efff !important;
+}
+
+.fffc-reveal-description {
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.fffc-reveal-button {
+  flex: 0 0 auto !important;
+  min-height: 34px !important;
+  padding: 6px 11px !important;
+  border: 1px solid currentColor !important;
+  border-radius: 6px !important;
+  color: inherit !important;
+  background: #fff !important;
+  font: 700 12px/1 system-ui, -apple-system, "Segoe UI", sans-serif !important;
+  cursor: pointer !important;
+}
+
+.fffc-reveal-button:is(:hover, :focus-visible) {
+  outline: 2px solid currentColor !important;
+  outline-offset: 2px !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-sponsored="1"]
+  :is([data-fffc-kind="ad"], [data-fffc-kind="sponsored"]):not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-suggested="1"]
+  [data-fffc-kind="suggested"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-reels="1"]
+  [data-fffc-reel="1"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-enable-word-filters="1"]
+  [data-fffc-kind="word-filter"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="debug"]
+  [data-fffc-activity="1"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="debug"]
+  [data-fffc-kind="ai-content"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-sponsored="1"]
+  [data-fffc-right-rail-sponsored="1"],
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-stories="1"]
+  [data-fffc-stories-tray="1"],
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-suggested-groups="1"]
+  [data-fffc-suggested-groups="1"],
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-group-chats="1"]
+  [data-fffc-group-chats="1"] {
+  position: relative !important;
+  outline: 4px solid #d93025 !important;
+  outline-offset: -4px !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-suggested="1"]
+  [data-fffc-kind="suggested"]:not([data-fffc-revealed="1"]) {
+  outline-color: #f29900 !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-reels="1"]
+  [data-fffc-reel="1"]:not([data-fffc-revealed="1"]) {
+  outline-color: #0b94a4 !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-enable-word-filters="1"]
+  [data-fffc-kind="word-filter"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="debug"]
+  [data-fffc-activity="1"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="debug"]
+  [data-fffc-kind="ai-content"]:not([data-fffc-revealed="1"]) {
+  outline-color: #8a3ffc !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-stories="1"]
+  [data-fffc-stories-tray="1"] {
+  outline-color: #1a56db !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-suggested-groups="1"]
+  [data-fffc-suggested-groups="1"] {
+  outline-color: #1b7a3d !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-group-chats="1"]
+  [data-fffc-group-chats="1"] {
+  outline-color: #b45309 !important;
+}
+
+/*
+ * Each label selector repeats its category's own hide-* condition rather
+ * than a single bare [data-fffc-kind]::before rule. Detectors mark every
+ * category unconditionally (see content.js), so a shared, ungated selector
+ * showed Debug-mode labels for categories whose toggle was off - e.g. Reels
+ * carried a label with "Filter Reels" unchecked, because nothing stopped
+ * data-fffc-kind="reel" itself from matching.
+ */
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-sponsored="1"]
+  :is([data-fffc-kind="ad"], [data-fffc-kind="sponsored"]):not([data-fffc-revealed="1"])::before,
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-suggested="1"]
+  [data-fffc-kind="suggested"]:not([data-fffc-revealed="1"])::before,
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-reels="1"]
+  [data-fffc-reel="1"]:not([data-fffc-revealed="1"])::before,
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-enable-word-filters="1"]
+  [data-fffc-kind="word-filter"]:not([data-fffc-revealed="1"])::before,
+html[data-fffc-enabled="1"][data-fffc-mode="debug"]
+  [data-fffc-activity="1"]:not([data-fffc-revealed="1"])::before,
+html[data-fffc-enabled="1"][data-fffc-mode="debug"]
+  [data-fffc-kind="ai-content"]:not([data-fffc-revealed="1"])::before,
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-sponsored="1"]
+  [data-fffc-right-rail-sponsored="1"]::before,
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-stories="1"]
+  [data-fffc-stories-tray="1"]::before,
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-suggested-groups="1"]
+  [data-fffc-suggested-groups="1"]::before,
+html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-group-chats="1"]
+  [data-fffc-group-chats="1"]::before {
+  content: attr(data-fffc-label);
+  position: absolute !important;
+  z-index: 2147483647 !important;
+  top: 4px !important;
+  left: 4px !important;
+  max-width: calc(100% - 16px) !important;
+  padding: 5px 8px !important;
+  border-radius: 5px !important;
+  color: #fff !important;
+  background: #d93025 !important;
+  font: 600 12px/1.25 system-ui, -apple-system, "Segoe UI", sans-serif !important;
+  pointer-events: none !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="debug"]
+  [data-fffc-kind="suggested"]::before {
+  color: #1f1f1f !important;
+  background: #fbbc04 !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="debug"]
+  [data-fffc-reel="1"]::before {
+  background: #087f8c !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="debug"]
+  [data-fffc-kind="word-filter"]::before,
+html[data-fffc-enabled="1"][data-fffc-mode="debug"]
+  [data-fffc-activity="1"]::before,
+html[data-fffc-enabled="1"][data-fffc-mode="debug"]
+  [data-fffc-kind="ai-content"]::before {
+  background: #6b2fc2 !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="debug"]
+  [data-fffc-stories-tray="1"]::before {
+  background: #1a56db !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="debug"]
+  [data-fffc-suggested-groups="1"]::before {
+  background: #1b7a3d !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="debug"]
+  [data-fffc-group-chats="1"]::before {
+  background: #b45309 !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  .fffc-reveal-control {
+    color: #ffb4ad !important;
+    background: #411713 !important;
+  }
+
+  [data-fffc-kind="suggested"] > .fffc-reveal-control {
+    color: #ffd98a !important;
+    background: #3f2b08 !important;
+  }
+
+  [data-fffc-reel="1"] > .fffc-reveal-control {
+    color: #8cecf6 !important;
+    background: #10383d !important;
+  }
+
+  [data-fffc-kind="word-filter"] > .fffc-reveal-control,
+  [data-fffc-activity="1"] > .fffc-reveal-control,
+  [data-fffc-kind="ai-content"] > .fffc-reveal-control {
+    color: #dcc4ff !important;
+    background: #2d1b46 !important;
+  }
+
+  .fffc-reveal-button {
+    background: #242526 !important;
+  }
+}

@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Feed Filter</title>
+    <link rel="stylesheet" href="popup.css">
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="mark" aria-hidden="true">F</div>
+        <div>
+          <h1>Feed Filter</h1>
+          <p>Testing build <span id="extensionVersion">…</span></p>
+        </div>
+      </header>
+
+      <section class="controls" aria-label="Filtering options">
+        <label class="switch-row">
+          <span>
+            <strong>Enable filtering</strong>
+            <small>Master switch</small>
+          </span>
+          <input id="enabled" type="checkbox">
+        </label>
+
+        <label class="switch-row">
+          <span>
+            <strong>Filter Ad &amp; Sponsored</strong>
+            <small>Feed, Marketplace and right-sidebar advertising</small>
+          </span>
+          <input id="hideSponsored" type="checkbox">
+        </label>
+
+        <label class="switch-row">
+          <span>
+            <strong>Filter Suggested posts</strong>
+            <small>Suggested and recommendation units — subcategories in Options</small>
+          </span>
+          <input id="hideSuggested" type="checkbox">
+        </label>
+
+        <label class="switch-row">
+          <span>
+            <strong>Filter Reels</strong>
+            <small>Reel posts and Reel carousel modules</small>
+          </span>
+          <input id="hideReels" type="checkbox">
+        </label>
+
+        <label class="switch-row">
+          <span>
+            <strong>Custom word filters</strong>
+            <small>Visible author and post text from your list</small>
+          </span>
+          <input id="enableWordFilters" type="checkbox">
+        </label>
+
+        <label class="switch-row">
+          <span>
+            <strong>Hide Stories tray</strong>
+            <small>Top-of-feed Stories shelf and Add to Story prompts</small>
+          </span>
+          <input id="hideStories" type="checkbox">
+        </label>
+
+        <label class="switch-row">
+          <span>
+            <strong>Hide Suggested Groups</strong>
+            <small>Right-sidebar group recommendations</small>
+          </span>
+          <input id="hideSuggestedGroups" type="checkbox">
+        </label>
+
+        <label class="switch-row">
+          <span>
+            <strong>Hide Group chats</strong>
+            <small>Right-sidebar Group chats section only, not Contacts</small>
+          </span>
+          <input id="hideGroupChats" type="checkbox">
+        </label>
+
+      </section>
+
+      <fieldset class="mode-controls">
+        <legend>Display mode</legend>
+        <label class="mode-card">
+          <input name="displayMode" value="hide" type="radio">
+          <span><strong>Hide</strong><small>Remove matches</small></span>
+        </label>
+        <label class="mode-card">
+          <input name="displayMode" value="collapse" type="radio">
+          <span><strong>Collapse</strong><small>Compact with Show button</small></span>
+        </label>
+        <label class="mode-card">
+          <input name="displayMode" value="debug" type="radio">
+          <span><strong>Debug</strong><small>Outline and explain</small></span>
+        </label>
+      </fieldset>
+
+      <button id="openOptions" class="activity-options" type="button">
+        Optional Filters
+      </button>
+
+      <section class="status" aria-live="polite">
+        <div class="status-heading">
+          <strong>Current page</strong>
+          <span id="surfaceBadge" class="badge">Not connected</span>
+        </div>
+        <p id="statusText">Open Facebook and reload the page.</p>
+        <div class="metrics" aria-label="Detected post counts">
+          <div><span id="currentAd">—</span><small>Ad now</small></div>
+          <div><span id="currentSponsored">—</span><small>Sponsored now</small></div>
+          <div><span id="currentSuggested">—</span><small>Suggested now</small></div>
+          <div><span id="currentReels">—</span><small>Reels now</small></div>
+          <div><span id="currentActivity">—</span><small>Activity now</small></div>
+          <div><span id="currentWordFilters">—</span><small>Word matches</small></div>
+          <div><span id="currentAiContent">—</span><small>AI content now</small></div>
+          <div><span id="sessionMatches">—</span><small>Since reload</small></div>
+        </div>
+        <div class="health">
+          <span>Feed stories now: <strong id="storyCandidates">—</strong></span>
+          <span>Header candidates checked: <strong id="headerCandidatesChecked">—</strong></span>
+          <span>Nested-object candidates: <strong id="nestedObjectCandidates">—</strong></span>
+          <span>Scrambled labels checked: <strong id="scrambledCandidates">—</strong></span>
+          <span>CTA-button matches: <strong id="ctaButtonMatches">—</strong></span>
+          <span>Rendered labels decoded: <strong id="glyphMatches">—</strong></span>
+          <span>Direct label matches: <strong id="directLabelMatches">—</strong></span>
+          <span>Ad-disclosure links: <strong id="adLinkSignals">—</strong></span>
+          <span>Follow/Join suggestions: <strong id="suggestionHeaderActions">—</strong></span>
+          <span>Recommendation pairs: <strong id="recommendationPairs">—</strong></span>
+          <span>Sidebar ad modules: <strong id="sidebarModules">—</strong></span>
+          <span>Suggested Groups modules: <strong id="suggestedGroupsModules">—</strong></span>
+          <span>Group chats modules: <strong id="groupChatsModules">—</strong></span>
+          <span>Stories tray matches: <strong id="storiesTrayMatches">—</strong></span>
+          <span>Decoy strings rejected: <strong id="decoyStringsRejected">—</strong></span>
+          <span>Full rescans: <strong id="reconciliationPasses">—</strong></span>
+          <span>Posts scanned: <strong id="postsScanned">—</strong></span>
+        </div>
+        <ul id="reasonList" class="reason-list" aria-label="Top detector reasons"></ul>
+      </section>
+
+      <section class="actions" aria-label="Testing actions">
+        <button id="exportDiagnostics" type="button">Export diagnostics</button>
+        <button id="exportDomCapture" type="button">Export DOM</button>
+        <button id="revealAll" type="button">Reveal all</button>
+        <button id="reapply" type="button">Reapply</button>
+      </section>
+      <button id="reloadFacebook" class="reload-version" type="button" hidden>
+        Reload Facebook to activate this version
+      </button>
+
+      <p id="actionMessage" class="action-message" aria-live="polite"></p>
+      <p class="note">
+        Diagnostics contain counts and detector codes only—never post text,
+        names, Facebook URLs, account IDs, cookies or messages.
+      </p>
+      <p class="note">
+        <strong>Export DOM</strong> is different: it saves the markup of the
+        posts currently on screen for bug reports, which can include visible
+        post text, author names and links. Review the file before sharing it
+        anywhere.
+      </p>
+    </main>
+    <script src="core.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>

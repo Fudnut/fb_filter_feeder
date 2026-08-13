@@ -1,0 +1,62 @@
+{
+  "author": "Steve Rose",
+  "manifest_version": 3,
+  "name": "FB Feed Filter",
+  "short_name": "FB Feed Filter",
+  "description": "Filters Facebook ads, sponsored and suggested posts, Reels, Marketplace posts, Stories, sidebar suggestions and custom words.",
+  "version": "0.1.0.11",
+  "minimum_chrome_version": "109",
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://facebook.com/*",
+    "https://*.facebook.com/*"
+  ],
+  "action": {
+    "default_title": "Feed Filter",
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "browser_specific_settings": {
+"gecko": {
+"id": "fb-feed-filter@kalzac.net",
+"strict_min_version": "109.0",
+"data_collection_permissions": {
+  "required": ["none"]
+}
+}
+},
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://facebook.com/*",
+        "https://*.facebook.com/*"
+      ],
+      "css": [
+        "content.css"
+      ],
+      "js": [
+        "core.js",
+        "content.js"
+      ],
+      "run_at": "document_start"
+    }
+  ]
+
+}

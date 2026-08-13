@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Feed Filter options</title>
+    <link rel="stylesheet" href="options.css">
+  </head>
+  <body>
+    <main>
+      <header>
+        <div class="mark" aria-hidden="true">F</div>
+        <div>
+          <h1>Feed Filter options</h1>
+          <p>Testing build <span id="extensionVersion">…</span></p>
+        </div>
+        <button id="closeOptions" class="secondary close-options" type="button">Close</button>
+      </header>
+
+      <div class="tabs" role="tablist" aria-label="Optional filter categories">
+        <button type="button" role="tab" id="tabButtonFilters" class="tab-button" aria-controls="tabPanelFilters" aria-selected="true">Filters</button>
+        <button type="button" role="tab" id="tabButtonSuggested" class="tab-button" aria-controls="tabPanelSuggested" aria-selected="false">Suggested &amp; Marketplace</button>
+        <button type="button" role="tab" id="tabButtonAccount" class="tab-button" aria-controls="tabPanelAccount" aria-selected="false">Account</button>
+      </div>
+
+      <div id="tabPanelFilters" role="tabpanel" aria-labelledby="tabButtonFilters">
+      <section class="word-card" aria-labelledby="wordFilterHeading">
+        <div class="status-row">
+          <div>
+            <h2 id="wordFilterHeading">Custom word filters</h2>
+            <p>
+              Enter one word or phrase per line. Matches are case-insensitive
+              and limited to visible author, story and link-preview text.
+            </p>
+          </div>
+          <label class="word-toggle">
+            <span>Enabled</span>
+            <input id="enableWordFilters" type="checkbox">
+          </label>
+        </div>
+        <textarea
+          id="customWordFilters"
+          rows="9"
+          maxlength="7000"
+          spellcheck="false"
+          placeholder="Namecheap.com&#10;Stax Burger Co."
+          aria-label="Custom word filter list"
+        ></textarea>
+        <div class="word-actions">
+          <button id="saveWordFilters" type="button">Save word filters</button>
+          <button id="clearWordFilters" class="secondary" type="button">Clear list</button>
+          <span id="wordFilterCount">0 filters</span>
+        </div>
+        <p>
+          The list remains in browser storage and is never included in
+          exported diagnostics.
+        </p>
+      </section>
+
+      <section class="activity-card" aria-labelledby="activityHeading">
+        <h2 id="activityHeading">Activity post filters</h2>
+        <p>
+          Each rule matches Facebook's own generated activity-story wording
+          (for example "is now friends with"), not your friends' own words, and
+          stays off until you turn it on. Select Debug in the main popup before
+          enabling one, then confirm the purple outline lands on the right
+          posts.
+        </p>
+        <div class="activity-list">
+          <label class="activity-row">
+            <span><strong>Game and app posts</strong><small>Explicit Facebook game/app activity</small></span>
+            <input id="filterAppGame" type="checkbox">
+          </label>
+          <label class="activity-row">
+            <span><strong>Became Friends</strong><small>Friendship activity stories</small></span>
+            <input id="filterBecameFriends" type="checkbox">
+          </label>
+          <label class="activity-row">
+            <span><strong>Liked a Page</strong><small>Liked or followed Page activity</small></span>
+            <input id="filterLikedPage" type="checkbox">
+          </label>
+          <label class="activity-row">
+            <span><strong>Joined a Group</strong><small>Group-joining activity stories</small></span>
+            <input id="filterJoinedGroup" type="checkbox">
+          </label>
+          <label class="activity-row">
+            <span><strong>Attending an Event</strong><small>Going or interested event activity</small></span>
+            <input id="filterAttendingEvent" type="checkbox">
+          </label>
+          <label class="activity-row">
+            <span><strong>Attended an Event</strong><small>Past event activity stories</small></span>
+            <input id="filterAttendedEvent" type="checkbox">
+          </label>
+          <label class="activity-row">
+            <span><strong>Products Shown</strong><small>Posts containing Facebook's Products Shown unit</small></span>
+            <input id="filterProductsShown" type="checkbox">
+          </label>
+        </div>
+        <div class="word-actions">
+          <button id="enableAllActivity" type="button">Enable all for Debug</button>
+          <button id="disableAllActivity" class="secondary" type="button">Disable all</button>
+        </div>
+      </section>
+
+      <section class="activity-card" aria-labelledby="aiContentHeading">
+        <h2 id="aiContentHeading">AI content label</h2>
+        <p>
+          Matches Meta's own "AI info"/"AI content" disclosure text next to
+          the post timestamp. Off by default and unverified against a live
+          Facebook capture - select Debug in the main popup before enabling,
+          then confirm the purple outline lands only on AI-labeled posts.
+        </p>
+        <div class="activity-list">
+          <label class="activity-row">
+            <span><strong>AI content</strong><small>Meta's AI info/AI content disclosure label</small></span>
+            <input id="filterAiContent" type="checkbox">
+          </label>
+        </div>
+      </section>
+      </div>
+
+      <div id="tabPanelSuggested" role="tabpanel" aria-labelledby="tabButtonSuggested" hidden>
+      <section class="activity-card" aria-labelledby="suggestedHeading">
+        <h2 id="suggestedHeading">Suggested post subcategories</h2>
+        <p>
+          Fine-tune which kinds of Suggested content the "Filter Suggested
+          posts" toggle in the main popup catches. All six are on by default,
+          matching the previous all-or-nothing behavior.
+        </p>
+        <div class="activity-list">
+          <label class="activity-row">
+            <span><strong>Follow</strong><small>Header "Follow" action on a suggested post</small></span>
+            <input id="filterSuggestedFollow" type="checkbox">
+          </label>
+          <label class="activity-row">
+            <span><strong>Join</strong><small>Header "Join" action on a suggested Group post</small></span>
+            <input id="filterSuggestedJoin" type="checkbox">
+          </label>
+          <label class="activity-row">
+            <span><strong>People You May Know</strong><small>"People you may know" labeled units</small></span>
+            <input id="filterSuggestedPeopleYouMayKnow" type="checkbox">
+          </label>
+          <label class="activity-row">
+            <span><strong>Suggested/Recommended For You</strong><small>"Suggested for you" and "Recommended for you" labeled units</small></span>
+            <input id="filterSuggestedForYou" type="checkbox">
+          </label>
+          <label class="activity-row">
+            <span><strong>Suggested Groups</strong><small>"Suggested groups" labeled posts in the feed</small></span>
+            <input id="filterSuggestedGroupPosts" type="checkbox">
+          </label>
+          <label class="activity-row">
+            <span><strong>Other suggested content</strong><small>Pages/Links/Events you may like, Jobs near you, Interested pairs and dismiss controls</small></span>
+            <input id="filterSuggestedOther" type="checkbox">
+          </label>
+        </div>
+        <div class="word-actions">
+          <button id="enableAllSuggested" type="button">Enable all</button>
+          <button id="disableAllSuggested" class="secondary" type="button">Disable all</button>
+        </div>
+      </section>
+
+      <section class="activity-card" aria-labelledby="marketplaceHeading">
+        <h2 id="marketplaceHeading">Marketplace default listing age</h2>
+        <p>
+          Marketplace only sorts by newest listings once you manually pick a
+          "Date listed" filter, every visit. This forces it by redirecting
+          to the same URL with that filter already applied - Facebook
+          encodes it as a URL parameter, confirmed on category and search
+          results pages. Untested on the plain Marketplace browse root; if
+          Facebook ignores the parameter there, this simply does nothing on
+          that page rather than breaking it.
+        </p>
+        <div class="activity-list">
+          <label class="activity-row">
+            <span><strong>Off</strong><small>Facebook's own default (no forced filter)</small></span>
+            <input type="radio" name="marketplaceDateFilter" value="off">
+          </label>
+          <label class="activity-row">
+            <span><strong>Last 24 hours</strong></span>
+            <input type="radio" name="marketplaceDateFilter" value="1">
+          </label>
+          <label class="activity-row">
+            <span><strong>Last 7 days</strong></span>
+            <input type="radio" name="marketplaceDateFilter" value="7">
+          </label>
+          <label class="activity-row">
+            <span><strong>Last 30 days</strong></span>
+            <input type="radio" name="marketplaceDateFilter" value="30">
+          </label>
+        </div>
+      </section>
+      </div>
+
+      <div id="tabPanelAccount" role="tabpanel" aria-labelledby="tabButtonAccount" hidden>
+      <section class="status-card" aria-labelledby="friendsHeading">
+        <div class="status-row">
+          <div>
+            <h2 id="friendsHeading">Deleted Friends alerts</h2>
+            <p>Retained for compatibility review, but not active in this beta.</p>
+          </div>
+          <input type="checkbox" disabled aria-label="Deleted Friends alerts unavailable">
+        </div>
+        <strong class="status">Validation required</strong>
+        <p>
+          Facebook can return a ranked or incomplete friend list. Treating a
+          missing entry as an unfriending event would create false alerts.
+          This option will be enabled only after stable IDs and complete-enough
+          captures pass repeated-session testing.
+        </p>
+      </section>
+      </div>
+
+      <section class="scope-card">
+        <h2>Included in this beta</h2>
+        <p>
+          Ad and Sponsored, Suggested posts, Reels, Marketplace advertising,
+          the Stories tray, right-sidebar Suggested Groups, right-sidebar
+          Group chats, seven opt-in activity-post filters, six Suggested-post
+          subcategory filters and custom word filtering.
+        </p>
+      </section>
+      <p id="saveStatus" class="save-status" aria-live="polite"></p>
+    </main>
+    <script src="core.js"></script>
+    <script src="options.js"></script>
+  </body>
+</html>
