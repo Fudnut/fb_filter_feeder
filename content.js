@@ -485,6 +485,14 @@
         }
       }
     }
+    if (!results.some(hasSubstantialText)) {
+      for (const block of fallbackVisibleContentBlocks()) {
+        if (!seen.has(block)) {
+          seen.add(block);
+          results.push(block);
+        }
+      }
+    }
     return results;
   }
 
