@@ -7,6 +7,15 @@ which build it is. Everything before that shipped under 0.1.0.1, so those
 entries are grouped together and dated instead.
 
 ## 0.1.0.12 - 2026-08-13
+- Amended before first deploy (still 0.1.0.12, no version bump): `storyCandidates()`
+  now falls back to the geometry-only capture (large, visible, text-bearing
+  blocks directly under `<main>`, added in 0.1.0.11 for Export DOM) when the
+  normal `aria-posinset`/`role='article'` discovery finds nothing substantial.
+  A Mac Chrome tester's DOM capture (2026-08-14) confirmed real feed posts
+  rendering with neither attribute at all - sidebar and Marketplace filtering
+  kept working (separate selectors) but the whole News Feed pipeline went
+  dark, since the fallback had only ever been wired into the diagnostic
+  capture, not real story discovery.
 - Fixed a false-positive Sponsored classification: `[data-ad-rendering-role^='cta']`
   (the CTA-button-marker signal, `ctaButtonAdSignal`) isn't ad-exclusive after
   all - a followed Page's own post (Send Message CTA, no visible Sponsored
