@@ -16,6 +16,24 @@ entries are grouped together and dated instead.
   kept working (separate selectors) but the whole News Feed pipeline went
   dark, since the fallback had only ever been wired into the diagnostic
   capture, not real story discovery.
+- Amended before first deploy (still 0.1.0.12, no version bump): the geometry
+  fallback above shipped a regression of its own - a second Mac Chrome
+  tester ("Rob", 2026-08-15) reported the feed working in debug mode (which
+  never hides anything) but going completely blank in hide mode. Their DOM
+  capture showed both real posts found that session came from the geometry
+  fallback, one correctly flagged Sponsored. Hypothesis: a geometry-picked
+  div is a plain size/text/visibility match, not a confirmed post boundary -
+  it could be Facebook's own virtualized-list item wrapper, and hide mode's
+  `display:none` fully removes a matched element from layout, which can
+  desync whatever Facebook itself measures on that wrapper for scroll/
+  render. Fallback-discovered stories now carry `data-fffc-geometry-fallback`
+  and content.css routes them through the same layout-preserving collapse
+  treatment collapse mode already uses (a small labelled bar, box stays in
+  the flow) even when the user's mode is "hide" - collapse mode itself
+  needed no change, its rules already match on kind alone regardless of
+  discovery method. New `geometryFallbackCandidatesSeen` diagnostic counter
+  tracks how often the fallback fires. Unverified against live Facebook -
+  awaiting re-test.
 - Fixed a false-positive Sponsored classification: `[data-ad-rendering-role^='cta']`
   (the CTA-button-marker signal, `ctaButtonAdSignal`) isn't ad-exclusive after
   all - a followed Page's own post (Send Message CTA, no visible Sponsored

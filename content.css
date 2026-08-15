@@ -341,3 +341,86 @@ html[data-fffc-enabled="1"][data-fffc-mode="debug"]
     background: #242526 !important;
   }
 }
+
+/*
+ * [data-fffc-geometry-fallback="1"] marks a story storyCandidates() found
+ * by size/text/visibility alone (no aria-posinset or role='article' on
+ * the page at all) - a plain div, not a confirmed post boundary. It could
+ * be Facebook's own virtualized-list item wrapper. The hide-mode rule at
+ * the top of this file removes a matched element from layout entirely
+ * (display:none); if that wrapper is one Facebook itself measures for
+ * scroll/render, doing so can break the feed outright (2026-08-15, Mac
+ * Chrome tester "Rob": worked in debug mode, which never hides anything,
+ * went completely blank in hide mode). Route these through the same
+ * layout-preserving collapse treatment collapse mode already uses instead
+ * - keeps a sized box in the flow. Collapse mode needs no equivalent
+ * override: its rules above already match on kind alone, regardless of
+ * how the story was discovered. Placed last so it wins the specificity
+ * tie against the hide-mode rule at the top of this file.
+ */
+html[data-fffc-enabled="1"][data-fffc-mode="hide"][data-fffc-hide-sponsored="1"]
+  [data-fffc-geometry-fallback="1"]:is([data-fffc-kind="ad"], [data-fffc-kind="sponsored"]):not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="hide"][data-fffc-hide-suggested="1"]
+  [data-fffc-geometry-fallback="1"][data-fffc-kind="suggested"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="hide"][data-fffc-hide-reels="1"]
+  [data-fffc-geometry-fallback="1"][data-fffc-reel="1"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="hide"][data-fffc-enable-word-filters="1"]
+  [data-fffc-geometry-fallback="1"][data-fffc-kind="word-filter"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="hide"]
+  [data-fffc-geometry-fallback="1"][data-fffc-activity="1"]:not([data-fffc-revealed="1"]),
+html[data-fffc-enabled="1"][data-fffc-mode="hide"]
+  [data-fffc-geometry-fallback="1"][data-fffc-kind="ai-content"]:not([data-fffc-revealed="1"]) {
+  position: relative !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  min-height: 62px !important;
+  max-height: 62px !important;
+  overflow: hidden !important;
+  border: 2px solid #c7352c !important;
+  border-radius: 8px !important;
+  background: #fff3f2 !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="hide"][data-fffc-hide-sponsored="1"]
+  [data-fffc-geometry-fallback="1"]:is([data-fffc-kind="ad"], [data-fffc-kind="sponsored"]):not([data-fffc-revealed="1"])
+  > :not(.fffc-reveal-control),
+html[data-fffc-enabled="1"][data-fffc-mode="hide"][data-fffc-hide-suggested="1"]
+  [data-fffc-geometry-fallback="1"][data-fffc-kind="suggested"]:not([data-fffc-revealed="1"])
+  > :not(.fffc-reveal-control),
+html[data-fffc-enabled="1"][data-fffc-mode="hide"][data-fffc-hide-reels="1"]
+  [data-fffc-geometry-fallback="1"][data-fffc-reel="1"]:not([data-fffc-revealed="1"])
+  > :not(.fffc-reveal-control),
+html[data-fffc-enabled="1"][data-fffc-mode="hide"][data-fffc-enable-word-filters="1"]
+  [data-fffc-geometry-fallback="1"][data-fffc-kind="word-filter"]:not([data-fffc-revealed="1"])
+  > :not(.fffc-reveal-control),
+html[data-fffc-enabled="1"][data-fffc-mode="hide"]
+  [data-fffc-geometry-fallback="1"][data-fffc-activity="1"]:not([data-fffc-revealed="1"])
+  > :not(.fffc-reveal-control),
+html[data-fffc-enabled="1"][data-fffc-mode="hide"]
+  [data-fffc-geometry-fallback="1"][data-fffc-kind="ai-content"]:not([data-fffc-revealed="1"])
+  > :not(.fffc-reveal-control) {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+html[data-fffc-enabled="1"][data-fffc-mode="hide"][data-fffc-hide-sponsored="1"]
+  [data-fffc-geometry-fallback="1"]:is([data-fffc-kind="ad"], [data-fffc-kind="sponsored"]):not([data-fffc-revealed="1"])
+  > .fffc-reveal-control,
+html[data-fffc-enabled="1"][data-fffc-mode="hide"][data-fffc-hide-suggested="1"]
+  [data-fffc-geometry-fallback="1"][data-fffc-kind="suggested"]:not([data-fffc-revealed="1"])
+  > .fffc-reveal-control,
+html[data-fffc-enabled="1"][data-fffc-mode="hide"][data-fffc-hide-reels="1"]
+  [data-fffc-geometry-fallback="1"][data-fffc-reel="1"]:not([data-fffc-revealed="1"])
+  > .fffc-reveal-control,
+html[data-fffc-enabled="1"][data-fffc-mode="hide"][data-fffc-enable-word-filters="1"]
+  [data-fffc-geometry-fallback="1"][data-fffc-kind="word-filter"]:not([data-fffc-revealed="1"])
+  > .fffc-reveal-control,
+html[data-fffc-enabled="1"][data-fffc-mode="hide"]
+  [data-fffc-geometry-fallback="1"][data-fffc-activity="1"]:not([data-fffc-revealed="1"])
+  > .fffc-reveal-control,
+html[data-fffc-enabled="1"][data-fffc-mode="hide"]
+  [data-fffc-geometry-fallback="1"][data-fffc-kind="ai-content"]:not([data-fffc-revealed="1"])
+  > .fffc-reveal-control {
+  display: flex !important;
+}

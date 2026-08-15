@@ -204,6 +204,7 @@
     startupRescans: 0,
     storyCandidatesSeen: 0,
     orphanArticleCandidatesSeen: 0,
+    geometryFallbackCandidatesSeen: 0,
     storiesObserved: 0,
     viewportCohortRefreshes: 0,
     viewportEntries: 0,
@@ -489,6 +490,21 @@
       for (const block of fallbackVisibleContentBlocks()) {
         if (!seen.has(block)) {
           seen.add(block);
+          /*
+           * A geometry-picked block is a plain div chosen by size/text/
+           * visibility alone, not a semantic post boundary - it could be
+           * Facebook's own virtualized-list item wrapper rather than an
+           * isolated post. display:none fully removes an element from
+           * layout; if Facebook's own scroll/render logic measures that
+           * wrapper, doing so can break the feed outright (2026-08-15,
+           * Mac Chrome tester "Rob": feed loaded fine in debug mode,
+           * which never hides anything, but went completely blank in
+           * hide mode). This marker lets content.css route these through
+           * the layout-preserving collapse treatment instead, even when
+           * the user's mode is "hide".
+           */
+          block.dataset.fffcGeometryFallback = "1";
+          counters.geometryFallbackCandidatesSeen += 1;
           results.push(block);
         }
       }
@@ -3126,6 +3142,8 @@
         storyCandidatesSeen: counters.storyCandidatesSeen,
         orphanArticleCandidatesSeen:
           counters.orphanArticleCandidatesSeen,
+        geometryFallbackCandidatesSeen:
+          counters.geometryFallbackCandidatesSeen,
         storiesObserved: counters.storiesObserved,
         viewportCohortSize: viewportStoryCohort.size,
         viewportCohortRefreshes: counters.viewportCohortRefreshes,
