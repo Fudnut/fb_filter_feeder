@@ -34,6 +34,18 @@ entries are grouped together and dated instead.
   discovery method. New `geometryFallbackCandidatesSeen` diagnostic counter
   tracks how often the fallback fires. Unverified against live Facebook -
   awaiting re-test.
+- Amended before first deploy (still 0.1.0.12, no version bump): the collapse
+  fix above didn't resolve Rob's blank-feed report - a follow-up capture
+  confirmed `data-fffc-geometry-fallback` was present and classification
+  was firing correctly, but every capture taken so far has been in debug
+  mode, which never hides anything - we still have zero data on what hide
+  mode's DOM actually looks like while it's failing. `captureDomSnapshot()`
+  now records `document.documentElement`'s `data-fffc-*` attributes in the
+  capture header (content.css's hide/collapse rules key off these; nothing
+  previously verified they're set correctly at capture time). The Export
+  DOM button already works in any display mode - not debug-gated as
+  assumed - so a real hide-mode capture is possible without switching modes
+  first.
 - Fixed a false-positive Sponsored classification: `[data-ad-rendering-role^='cta']`
   (the CTA-button-marker signal, `ctaButtonAdSignal`) isn't ad-exclusive after
   all - a followed Page's own post (Send Message CTA, no visible Sponsored

@@ -3031,10 +3031,16 @@
       );
     }
 
+    const rootAttrs = Array.from(document.documentElement.attributes)
+      .filter((attr) => attr.name.startsWith("data-fffc"))
+      .map((attr) => `${attr.name}="${attr.value}"`)
+      .join(" ");
+
     sections.unshift(
       `URL: ${location.href}\n` +
         `Captured: ${new Date().toISOString()}\n` +
         `Build: ${BUILD_VERSION}\n` +
+        `<html> attributes: ${rootAttrs || "(none set)"}\n` +
         `Stories found: ${stories.length} (${substantialCount} with real content)` +
         (stories.length === CAPTURE_MAX_STORIES
           ? ` (capped at ${CAPTURE_MAX_STORIES})`
