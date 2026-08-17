@@ -129,6 +129,18 @@
   const RECONCILE_INTERVAL_MS = 2000;
   const SUGGESTION_SETTLE_MS = 360;
   const FILTER_LAYOUT_QUIET_MS = 240;
+  /*
+   * A 0px-margin IntersectionObserver only fires once a story is already
+   * on screen, so classification and hiding always happen at least one
+   * paint after the user can already see the post - a visible flash on
+   * every sponsored/suggested card, not just an occasional one. Scanning a
+   * story while it is still this far below the fold means the hide can
+   * land before the post is ever painted. Kept well short of a full
+   * viewport height so this only pre-empts content already rendered into
+   * the DOM (Facebook still decides on its own when to mount a post at
+   * all); it does not try to force anything into existence early.
+   */
+  const INTERSECTION_PRESCAN_MARGIN = "800px";
   const STARTUP_RESCAN_DELAYS = [100, 350, 800, 1600, 3200, 6000, 10000];
   /*
    * Self-diagnosing breakage detection. The six literal-disclosure-text
@@ -245,6 +257,8 @@
     storiesObserved: 0,
     viewportCohortRefreshes: 0,
     viewportEntries: 0,
+    prescanIntersections: 0,
+    prescanQuietWindowSkips: 0,
     offscreenStoriesDeferred: 0,
     storyGeometryFallbackAdmissions: 0,
     layoutScrollsSuppressed: 0,
@@ -320,13 +334,31 @@
       ? new IntersectionObserver(
           (entries) => {
             for (const entry of entries) {
-            if (!entry.isIntersecting) {
-              continue;
-            }
-              counters.viewportEntries += 1;
-              if (!viewportStoryCohort.has(entry.target)) {
+              if (!entry.isIntersecting) {
                 continue;
               }
+              counters.viewportEntries += 1;
+              /*
+               * A story reached only because the margin above extends this
+               * far below the fold is safe to scan pre-emptively. A story
+               * reached because a hide applied moments ago just shifted the
+               * layout is not: scanning it immediately would risk the same
+               * automatic hide cascade refreshViewportStories already
+               * guards against for genuine scroll events (see
+               * FILTER_LAYOUT_QUIET_MS), just triggered through this
+               * observer instead of the scroll listener. Reusing that same
+               * quiet window here keeps both paths using one definition of
+               * "this reveal might be our own doing".
+               */
+              if (
+                performance.now() - lastFilterMutationAt <
+                FILTER_LAYOUT_QUIET_MS
+              ) {
+                counters.prescanQuietWindowSkips += 1;
+                continue;
+              }
+              counters.prescanIntersections += 1;
+              viewportStoryCohort.add(entry.target);
               queueStory(entry.target, "intersection");
               window.setTimeout(
                 () => queueStory(entry.target, "intersection-settled"),
@@ -334,7 +366,11 @@
               );
             }
           },
-          { root: null, rootMargin: "0px", threshold: 0 }
+          {
+            root: null,
+            rootMargin: INTERSECTION_PRESCAN_MARGIN,
+            threshold: 0
+          }
         )
       : null;
 
@@ -3260,6 +3296,8 @@
         viewportCohortSize: viewportStoryCohort.size,
         viewportCohortRefreshes: counters.viewportCohortRefreshes,
         viewportEntries: counters.viewportEntries,
+        prescanIntersections: counters.prescanIntersections,
+        prescanQuietWindowSkips: counters.prescanQuietWindowSkips,
         offscreenStoriesDeferred: counters.offscreenStoriesDeferred,
         storyGeometryFallbackAdmissions:
           counters.storyGeometryFallbackAdmissions,
