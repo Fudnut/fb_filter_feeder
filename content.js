@@ -140,7 +140,8 @@
    * the DOM (Facebook still decides on its own when to mount a post at
    * all); it does not try to force anything into existence early.
    */
-  const INTERSECTION_PRESCAN_MARGIN = "800px";
+  const INTERSECTION_PRESCAN_MARGIN_PX = 800;
+  const INTERSECTION_PRESCAN_MARGIN = `${INTERSECTION_PRESCAN_MARGIN_PX}px`;
   const STARTUP_RESCAN_DELAYS = [100, 350, 800, 1600, 3200, 6000, 10000];
   /*
    * Self-diagnosing breakage detection. The six literal-disclosure-text
@@ -259,6 +260,7 @@
     viewportEntries: 0,
     prescanIntersections: 0,
     prescanQuietWindowSkips: 0,
+    mutationPrescanAdmissions: 0,
     offscreenStoriesDeferred: 0,
     storyGeometryFallbackAdmissions: 0,
     layoutScrollsSuppressed: 0,
@@ -627,7 +629,7 @@
     return closestStory(element) === story;
   }
 
-  function intersectsViewport(element) {
+  function intersectsViewport(element, margin = 0) {
     const rectangle = element?.getBoundingClientRect?.();
     if (!hasPositiveRect(rectangle)) {
       return false;
@@ -641,10 +643,10 @@
       Number(window.innerHeight || 0)
     );
     return (
-      rectangle.bottom > 0 &&
-      rectangle.right > 0 &&
-      rectangle.top < viewportHeight &&
-      rectangle.left < viewportWidth
+      rectangle.bottom > -margin &&
+      rectangle.right > -margin &&
+      rectangle.top < viewportHeight + margin &&
+      rectangle.left < viewportWidth + margin
     );
   }
 
@@ -657,8 +659,8 @@
    * refreshed only at explicit lifecycle/viewport boundaries, so a card pulled
    * upward solely by an earlier hide still cannot start an automatic cascade.
    */
-  function intersectsStoryViewport(story) {
-    if (intersectsViewport(story)) {
+  function intersectsStoryViewport(story, margin = 0) {
+    if (intersectsViewport(story, margin)) {
       return true;
     }
     const geometryCandidates = Array.from(
@@ -667,7 +669,7 @@
     for (const candidate of geometryCandidates) {
       if (
         closestStory(candidate) !== story ||
-        !intersectsViewport(candidate)
+        !intersectsViewport(candidate, margin)
       ) {
         continue;
       }
@@ -714,14 +716,34 @@
     }
     observeStory(story);
     if (!viewportStoryCohort.has(story)) {
-      if (!deferredOffscreenStories.has(story)) {
-        deferredOffscreenStories.add(story);
-        counters.offscreenStoriesDeferred += 1;
+      /*
+       * A mutation fires only for a node that genuinely changed, never
+       * merely because a sibling's hide shifted the layout - unlike
+       * IntersectionObserver, mutation-triggered discovery carries no
+       * hide-cascade risk. Waiting for that observer's own, separately
+       * timed callback to admit a story that is already within the
+       * pre-scan margin right now reopens the same flash the margin was
+       * added to close: the story would sit unclassified for however many
+       * extra frames that round trip takes. Check the geometry
+       * synchronously here instead, so a story already in range gets
+       * queued in the same tick it was discovered.
+       */
+      if (
+        String(_reason).startsWith("mutation") &&
+        intersectsStoryViewport(story, INTERSECTION_PRESCAN_MARGIN_PX)
+      ) {
+        counters.mutationPrescanAdmissions += 1;
+        viewportStoryCohort.add(story);
+      } else {
+        if (!deferredOffscreenStories.has(story)) {
+          deferredOffscreenStories.add(story);
+          counters.offscreenStoriesDeferred += 1;
+        }
+        if (String(_reason).startsWith("mutation")) {
+          clearRecycledOffscreenMatch(story);
+        }
+        return;
       }
-      if (String(_reason).startsWith("mutation")) {
-        clearRecycledOffscreenMatch(story);
-      }
-      return;
     }
     deferredOffscreenStories.delete(story);
     queue.add(story);
@@ -3298,6 +3320,7 @@
         viewportEntries: counters.viewportEntries,
         prescanIntersections: counters.prescanIntersections,
         prescanQuietWindowSkips: counters.prescanQuietWindowSkips,
+        mutationPrescanAdmissions: counters.mutationPrescanAdmissions,
         offscreenStoriesDeferred: counters.offscreenStoriesDeferred,
         storyGeometryFallbackAdmissions:
           counters.storyGeometryFallbackAdmissions,

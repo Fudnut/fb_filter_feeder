@@ -27,6 +27,22 @@ entries are grouped together and dated instead.
   for. New `prescanIntersections`/`prescanQuietWindowSkips` counters
   confirm both paths fire. Unverified against live Facebook - awaiting
   re-test.
+- Amended before first deploy (still 0.1.0.14, no version bump): the
+  IntersectionObserver margin above wasn't enough on its own - live testing
+  on Chrome still showed a brief flash. `queueStory()` only ever queues a
+  story once it's already a member of `viewportStoryCohort`, and a story
+  freshly discovered by the mutation observer only becomes a member once
+  the IntersectionObserver's own, separately timed callback admits it -
+  which is a real round trip, not a same-tick event, so the story still
+  sat unclassified for however many frames that took. Mutation-triggered
+  discovery carries no hide-cascade risk to begin with (a mutation only
+  fires for a node that actually changed, never merely because a sibling's
+  hide shifted the layout), so `queueStory()` now checks the pre-scan
+  margin synchronously via `getBoundingClientRect()` for mutation-sourced
+  calls and admits a story into the cohort immediately when it already
+  qualifies, rather than waiting on the observer round trip at all. New
+  `mutationPrescanAdmissions` counter confirms it fires. Unverified against
+  live Facebook - awaiting re-test.
 
 ## 0.1.0.13 - 2026-08-17
 - First real deploy of everything accumulated below under 0.1.0.12's
