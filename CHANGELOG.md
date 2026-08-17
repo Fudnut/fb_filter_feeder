@@ -6,6 +6,28 @@ distributed zip is named to match, so a filename always tells you exactly
 which build it is. Everything before that shipped under 0.1.0.1, so those
 entries are grouped together and dated instead.
 
+## 0.1.0.14 - 2026-08-17
+- Bumped from 0.1.0.13, which hit a Mozilla add-on review snag after the
+  listing was deleted and recreated; re-using that version number wasn't
+  possible.
+- Fixed a visible flash on every sponsored/suggested post while scrolling
+  on Firefox: a post would render, then disappear a moment later, rather
+  than never appearing at all. Root cause: `refreshViewportStories()` only
+  ever queues a story for classification once it already intersects the
+  viewport at 0px margin, and the reactive intersection observer backing
+  it only acted on stories already in that frozen set - so a freshly
+  streamed-in post always got at least one paint, often several, before
+  detection ever ran. `INTERSECTION_PRESCAN_MARGIN` (800px) now lets a
+  story be classified and hidden while it's still below the fold, so the
+  hide lands before the post is ever painted. Kept well inside the
+  existing `FILTER_LAYOUT_QUIET_MS` guard - a story pulled into the
+  observer's range because a hide we just applied shifted the layout is
+  skipped for the same reason a genuine scroll event is skipped in that
+  window, so this doesn't reopen the hide-cascade risk that guard exists
+  for. New `prescanIntersections`/`prescanQuietWindowSkips` counters
+  confirm both paths fire. Unverified against live Facebook - awaiting
+  re-test.
+
 ## 0.1.0.13 - 2026-08-17
 - First real deploy of everything accumulated below under 0.1.0.12's
   "amended before first deploy" entries - the Mac Chrome geometry-fallback
