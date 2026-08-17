@@ -130,6 +130,27 @@
   const SUGGESTION_SETTLE_MS = 360;
   const FILTER_LAYOUT_QUIET_MS = 240;
   const STARTUP_RESCAN_DELAYS = [100, 350, 800, 1600, 3200, 6000, 10000];
+  /*
+   * Self-diagnosing breakage detection. The six literal-disclosure-text
+   * detectors (directAdLabelMatches, svgLabelMatches, labelledReferenceMatches,
+   * glyphDecodeMatches, paidForByDisclosureMatches, disclosureLinkMatches)
+   * are the reliable signal - they key off the actual "Sponsored"/"Ad"/
+   * "Suggested for you" text Facebook renders, wherever it lives. Everything
+   * else (the CTA-button-marker signal, suggestion header actions, etc.) is
+   * a heuristic proxy for it, and heuristics false-positive (see the
+   * 0.1.0.12 CTA-button group-origin fix). If matches keep being found every
+   * session but NONE of them ever come from literal disclosure text despite
+   * scanning hundreds of header candidates, that is the same signature a
+   * structural markup change leaves behind: everything still "works" because
+   * the heuristics keep firing, while the actual evidence-based signal has
+   * gone silent - exactly what happened on Mac Chrome from 2026-08-14
+   * onward, where the disclosure text sat behind portal spans and SVG
+   * sprites the within-story scan never reached. Surfacing this from a
+   * console warning or a diagnostics export field beats another multi-round
+   * DOM-capture investigation to notice it again.
+   */
+  const TEXT_DISCLOSURE_BREAKAGE_MIN_HEADER_CANDIDATES = 200;
+  let textDisclosureBreakageWarned = false;
   const MATCH_MISS_LIMIT = 4;
   const HEADER_EXCLUSIONS =
     "[data-ad-rendering-role='story_message']," +
@@ -197,6 +218,21 @@
   const observedMarketplaceCards = new WeakSet();
   const storyState = new WeakMap();
   const markedRightRailBranches = new WeakSet();
+  /*
+   * Facebook's ad-label targets - portal <span id="_r_…"> nodes, and SVG
+   * <symbol> nodes a sprite <use> points at - live outside the post and are
+   * often torn down again almost immediately, frequently before our own
+   * (deferred) scan pass gets a chance to inspect them. By then
+   * document.getElementById(id) comes back empty even though the disclosure
+   * text genuinely existed a moment earlier. This map is filled inline from
+   * inside the MutationObserver callback itself, the only point in the
+   * pipeline where the node is still certain to be present; the detectors
+   * below fall back to it whenever a live lookup misses. Capped and
+   * FIFO-evicted, since new one-off ids show up nonstop as the user scrolls
+   * further down the feed.
+   */
+  const MAX_LABEL_TEXT_CACHE = 200;
+  const ephemeralLabelText = new Map();
   const counters = {
     startedAt: new Date().toISOString(),
     reconciliationPasses: 0,
@@ -232,7 +268,9 @@
     paidForByDisclosureMatches: 0,
     glyphDecodeMatches: 0,
     svgLabelMatches: 0,
+    svgLabelCacheHits: 0,
     labelledReferenceMatches: 0,
+    labelledReferenceCacheMatches: 0,
     disclosureLinkMatches: 0,
     canvasHeaderCandidates: 0,
     adMatches: 0,
@@ -1072,6 +1110,39 @@
     });
   }
 
+  const LABEL_CACHE_TEXT_MAX_LENGTH = 40;
+
+  function recordLabelTargetText(element) {
+    if (!element.id) {
+      return;
+    }
+    const text = core.normalizeText(element.textContent);
+    if (!text || text.length > LABEL_CACHE_TEXT_MAX_LENGTH) {
+      return;
+    }
+    if (ephemeralLabelText.size >= MAX_LABEL_TEXT_CACHE) {
+      ephemeralLabelText.delete(ephemeralLabelText.keys().next().value);
+    }
+    ephemeralLabelText.set(element.id, text);
+  }
+
+  /*
+   * Called synchronously from the MutationObserver callback for every added
+   * node, before the deferred scan queue ever looks at it - see
+   * MAX_LABEL_TEXT_CACHE above for why the timing matters.
+   */
+  function captureAddedLabelTargets(node) {
+    if (!(node instanceof Element)) {
+      return;
+    }
+    if (node.id) {
+      recordLabelTargetText(node);
+    }
+    for (const element of node.querySelectorAll?.("[id]") || []) {
+      recordLabelTargetText(element);
+    }
+  }
+
   function labelledReferenceLabel(element) {
     const labelledBy = core.normalizeText(
       element.getAttribute?.("aria-labelledby")
@@ -1081,18 +1152,23 @@
     }
     for (const id of labelledBy.split(/\s+/)) {
       const target = document.getElementById(id);
-      if (!target) {
+      if (target) {
+        const direct = directAdLabel(target);
+        if (direct) {
+          return direct;
+        }
+        if (hasScrambledLabelStructure(target)) {
+          const decoded = core.decodeExactAdLabel(glyphRecordsFor(target));
+          if (decoded) {
+            return decoded;
+          }
+        }
         continue;
       }
-      const direct = directAdLabel(target);
-      if (direct) {
-        return direct;
-      }
-      if (hasScrambledLabelStructure(target)) {
-        const decoded = core.decodeExactAdLabel(glyphRecordsFor(target));
-        if (decoded) {
-          return decoded;
-        }
+      const cached = ephemeralLabelText.get(id);
+      if (cached && core.matchesAdDisclosureLabel(cached)) {
+        counters.labelledReferenceCacheMatches += 1;
+        return cached;
       }
     }
     return null;
@@ -1110,13 +1186,20 @@
       if (!reference.startsWith("#")) {
         continue;
       }
-      const target = document.getElementById(reference.slice(1));
+      const id = reference.slice(1);
+      const target = document.getElementById(id);
       if (target) {
         values.push(
           target.textContent,
           target.nextSibling?.textContent,
           target.nextElementSibling?.textContent
         );
+        continue;
+      }
+      const cached = ephemeralLabelText.get(id);
+      if (cached) {
+        counters.svgLabelCacheHits += 1;
+        values.push(cached);
       }
     }
     return (
@@ -3161,6 +3244,7 @@
       },
       health: {
         observerStarted,
+        textDisclosureDetectionSuspect: isTextDisclosureDetectionSuspect(),
         reconciliationPasses: counters.reconciliationPasses,
         mutationBatches: counters.mutationBatches,
         startupRescans: counters.startupRescans,
@@ -3204,7 +3288,9 @@
           counters.paidForByDisclosureMatches,
         glyphDecodeMatches: counters.glyphDecodeMatches,
         svgLabelMatches: counters.svgLabelMatches,
+        svgLabelCacheHits: counters.svgLabelCacheHits,
         labelledReferenceMatches: counters.labelledReferenceMatches,
+        labelledReferenceCacheMatches: counters.labelledReferenceCacheMatches,
         disclosureLinkMatches: counters.disclosureLinkMatches,
         canvasHeaderCandidates: counters.canvasHeaderCandidates,
         adMatches: counters.adMatches,
@@ -3277,6 +3363,40 @@
     return changed;
   }
 
+  function textDisclosureMatchTotal() {
+    return (
+      counters.directAdLabelMatches +
+      counters.svgLabelMatches +
+      counters.labelledReferenceMatches +
+      counters.glyphDecodeMatches +
+      counters.paidForByDisclosureMatches +
+      counters.disclosureLinkMatches
+    );
+  }
+
+  function isTextDisclosureDetectionSuspect() {
+    return (
+      counters.headerCandidatesChecked >=
+        TEXT_DISCLOSURE_BREAKAGE_MIN_HEADER_CANDIDATES &&
+      counters.uniqueMatches > 0 &&
+      textDisclosureMatchTotal() === 0
+    );
+  }
+
+  function checkTextDisclosureBreakage() {
+    if (textDisclosureBreakageWarned || !isTextDisclosureDetectionSuspect()) {
+      return;
+    }
+    textDisclosureBreakageWarned = true;
+    console.warn(
+      `[feed-bouncer] ${counters.uniqueMatches} matches found this session, ` +
+        `none from literal disclosure text (checked ` +
+        `${counters.headerCandidatesChecked} header candidates). Detection ` +
+        `is running on heuristic fallbacks only - this is the signature a ` +
+        `Facebook markup change leaves behind. Build: ${BUILD_VERSION}.`
+    );
+  }
+
   function runReconciliation(reason, refreshViewport = false) {
     reconciliationPass += 1;
     counters.reconciliationPasses += 1;
@@ -3291,6 +3411,7 @@
     scanReelModules(refreshViewport);
     scanStoriesTray(refreshViewport);
     scanMarketplace(refreshViewport);
+    checkTextDisclosureBreakage();
   }
 
   function begin() {
@@ -3372,10 +3493,12 @@
       for (const mutation of mutations) {
         queueNode(mutation.target, "mutation-target");
         for (const node of mutation.addedNodes || []) {
+          captureAddedLabelTargets(node);
           queueNode(node, "mutation-added");
         }
       }
     });
+    captureAddedLabelTargets(document.documentElement);
     observer.observe(document.documentElement, {
       childList: true,
       subtree: true,
