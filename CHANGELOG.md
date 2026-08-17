@@ -6,6 +6,17 @@ distributed zip is named to match, so a filename always tells you exactly
 which build it is. Everything before that shipped under 0.1.0.1, so those
 entries are grouped together and dated instead.
 
+## 0.1.0.13 - 2026-08-17
+- First real deploy of everything accumulated below under 0.1.0.12's
+  "amended before first deploy" entries - the Mac Chrome geometry-fallback
+  discovery path, the hide-mode collapse fix, the `<html>` root attribute
+  capture, the first-reconciliation-pass skip, the ephemeral disclosure-
+  label cache, and the self-diagnosing breakage detector. Bumped now rather
+  than kept at 0.1.0.12 because that build accumulated five rounds of
+  amendments across several days of live Mac Chrome testing with Rob, and
+  the build number had stopped being a reliable way to tell which of those
+  amendments a given diagnostics export or DOM capture actually reflects.
+
 ## 0.1.0.12 - 2026-08-13
 - Amended before first deploy (still 0.1.0.12, no version bump): `storyCandidates()`
   now falls back to the geometry-only capture (large, visible, text-bearing
@@ -68,6 +79,30 @@ entries are grouped together and dated instead.
   known-unstable pass is smaller and doesn't add a new heuristic. New
   `geometryFallbackSkippedFirstPass` counter confirms the guard fires.
   Unverified against live Facebook - awaiting re-test.
+- Amended before first deploy (still 0.1.0.12, no version bump): two
+  additions. (1) Ephemeral disclosure-label caching: Facebook parks an ad's
+  accessible-name target - a portal `<span id="_r_…">` or an SVG `<symbol>`
+  a sprite `<use>` points at - outside the post, then sometimes removes it
+  again within the same frame once the accessible name is computed. The
+  existing `labelledReferenceLabel`/`referencedSvgLabel` detectors
+  (`svgLabelMatches`, `labelledReferenceMatches`) sat at 0 across every Mac
+  Chrome capture this week despite classification succeeding via the
+  CTA-button fallback - `document.getElementById(id)` was finding nothing
+  because the target was already gone by the time the deferred scan ran. A
+  bounded `ephemeralLabelText` cache (200 entries, oldest-evicted) now
+  records id -> text synchronously in the MutationObserver callback, before
+  the node can be removed, and both detectors fall back to it when the live
+  lookup misses. New `svgLabelCacheHits`/`labelledReferenceCacheMatches`
+  counters confirm it fires. (2) Self-diagnosing breakage detection: the six
+  literal-disclosure-text detectors are the reliable signal; the CTA-button-
+  marker and similar heuristics are proxies for it and can false-positive.
+  If matches keep being found every session but none of them ever come from
+  literal disclosure text despite scanning hundreds of header candidates,
+  that's the same signature a structural Facebook markup change leaves
+  behind - exactly what every Mac Chrome capture this week showed. A
+  one-time `console.warn` plus a live `textDisclosureDetectionSuspect` field
+  in Export Diagnostics now surfaces that state directly, instead of
+  needing another multi-round DOM-capture investigation to notice it.
 - Fixed a false-positive Sponsored classification: `[data-ad-rendering-role^='cta']`
   (the CTA-button-marker signal, `ctaButtonAdSignal`) isn't ad-exclusive after
   all - a followed Page's own post (Send Message CTA, no visible Sponsored
