@@ -205,6 +205,7 @@
     storyCandidatesSeen: 0,
     orphanArticleCandidatesSeen: 0,
     geometryFallbackCandidatesSeen: 0,
+    geometryFallbackSkippedFirstPass: 0,
     storiesObserved: 0,
     viewportCohortRefreshes: 0,
     viewportEntries: 0,
@@ -486,7 +487,26 @@
         }
       }
     }
-    if (!results.some(hasSubstantialText)) {
+    /*
+     * The very first reconciliation pass runs immediately at page load
+     * (bootstrap's runReconciliation("initial", true)), before Facebook has
+     * hydrated the feed into individually-sized posts. At that moment
+     * fallbackVisibleContentBlocks() can pick up one large "everything
+     * loaded so far" wrapper as if it were a single post - it is the only
+     * substantial block around, and still fits under the height cap. A
+     * detector that queries broadly within it (e.g. the CTA-button-marker
+     * signal) then matches on one ad anywhere in that early batch and
+     * collapses the whole wrapper, hiding the entire feed until the user
+     * manually reveals it (2026-08-17, Mac Chrome tester "Rob": one
+     * Sponsored bar on load, "have to click show to see the feed", correct
+     * per-post behaviour once scrolling). Skip the fallback on pass 1 only -
+     * real per-post detection or the very next startup rescan (100ms later,
+     * see STARTUP_RESCAN_DELAYS) will very likely have caught up by pass 2.
+     */
+    if (reconciliationPass <= 1 && !results.some(hasSubstantialText)) {
+      counters.geometryFallbackSkippedFirstPass += 1;
+    }
+    if (reconciliationPass > 1 && !results.some(hasSubstantialText)) {
       for (const block of fallbackVisibleContentBlocks()) {
         if (!seen.has(block)) {
           seen.add(block);
@@ -3150,6 +3170,8 @@
           counters.orphanArticleCandidatesSeen,
         geometryFallbackCandidatesSeen:
           counters.geometryFallbackCandidatesSeen,
+        geometryFallbackSkippedFirstPass:
+          counters.geometryFallbackSkippedFirstPass,
         storiesObserved: counters.storiesObserved,
         viewportCohortSize: viewportStoryCohort.size,
         viewportCohortRefreshes: counters.viewportCohortRefreshes,

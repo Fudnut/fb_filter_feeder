@@ -46,6 +46,28 @@ entries are grouped together and dated instead.
   DOM button already works in any display mode - not debug-gated as
   assumed - so a real hide-mode capture is possible without switching modes
   first.
+- Amended before first deploy (still 0.1.0.12, no version bump): a real
+  hide-mode capture from Rob (2026-08-17) plus his own description - one
+  "Sponsored" bar on load, "have to click show to be able to see the feed",
+  then correct per-post collapsing while scrolling - located the actual bug.
+  The root `<html>` attributes (added above) confirmed `data-fffc-mode`
+  etc. were all correct, ruling that theory out. Root cause: the very first
+  reconciliation pass runs immediately at page load, before Facebook has
+  hydrated the feed into individually-sized posts. At that moment
+  `fallbackVisibleContentBlocks()` can pick up one large "everything loaded
+  so far" wrapper as if it were a single post, and the CTA-button-marker
+  signal - which queries broadly within whatever boundary it's given -
+  matches on one ad anywhere in that early batch and collapses the entire
+  wrapper, hiding the whole feed until manually revealed. `storyCandidates()`
+  now skips the geometry fallback on reconciliation pass 1 only; real
+  per-post detection or the 100ms startup rescan (`STARTUP_RESCAN_DELAYS`)
+  catches up almost immediately after. Considered rejecting candidates with
+  more than one `profile_name` marker instead, but real single posts can
+  legitimately have two (an embedded shared post) or many `cta-N` markers
+  (a product carousel, seen in an earlier capture) - skipping the one
+  known-unstable pass is smaller and doesn't add a new heuristic. New
+  `geometryFallbackSkippedFirstPass` counter confirms the guard fires.
+  Unverified against live Facebook - awaiting re-test.
 - Fixed a false-positive Sponsored classification: `[data-ad-rendering-role^='cta']`
   (the CTA-button-marker signal, `ctaButtonAdSignal`) isn't ad-exclusive after
   all - a followed Page's own post (Send Message CTA, no visible Sponsored
