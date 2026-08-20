@@ -6,6 +6,31 @@ distributed zip is named to match, so a filename always tells you exactly
 which build it is. Everything before that shipped under 0.1.0.1, so those
 entries are grouped together and dated instead.
 
+## 0.1.0.15 - 2026-08-20
+- Fixed a false-positive Sponsored classification on reshares: the
+  CTA-button-marker signal (`ctaButtonAdSignal`) queries the whole story
+  for any `[data-ad-rendering-role^='cta']` element, with no scoping to
+  which post within the story it belongs to. A reshare/quote-share renders
+  the sharer's own header/message immediately followed by the shared
+  post's own header/message, both through the same component family the
+  CTA check keys off - so a CTA on the *embedded* post (a Page's own "Send
+  message"/"Shop now" button) was getting attributed to the sharer's own
+  post instead (live capture 2026-08-20: Suzanne Dousset resharing a "True
+  Crime Society" Page post, collapsed as "Sponsored · 100%"). New
+  `ctaButtonBelongsToEmbeddedPost()` guard detects a second
+  `data-ad-rendering-role='profile_name'` inside the story (the signature
+  of a nested sub-post) and checks containment - not DOM order, which
+  turned out not to be reliable here since the profile_name attribute
+  lands on a wrapper that closes later in the tree than the CTA itself,
+  even though the CTA is clearly nested inside that same wrapper - to tell
+  whether the CTA sits inside the embedded post's own boundary rather than
+  the story's own. New `ctaButtonEmbeddedPostProtections` counter confirms
+  it fires. Same shape as the existing `hasGroupOrigin` guard from
+  0.1.0.12, just for a different embedding mechanism (a quote-share
+  instead of a group relay) - a real in-group or in-quote ad still falls
+  through to the text-disclosure detectors, which Meta's policy requires
+  every paid placement to render regardless.
+
 ## 0.1.0.14 - 2026-08-17
 - Bumped from 0.1.0.13, which hit a Mozilla add-on review snag after the
   listing was deleted and recreated; re-using that version number wasn't
