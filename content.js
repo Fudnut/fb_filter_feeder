@@ -280,7 +280,6 @@
     scrambledHeaderCandidates: 0,
     ctaButtonMarkerMatches: 0,
     ctaButtonGroupOriginProtections: 0,
-    ctaButtonEmbeddedPostProtections: 0,
     directAdLabelMatches: 0,
     paidForByDisclosureMatches: 0,
     glyphDecodeMatches: 0,
@@ -1404,46 +1403,23 @@
   // with zero false positives, so it's kept as its own signal rather than
   // folded into the generic attribute-count check the audit ruled out.
   /*
-   * A CTA-button match can belong to an embedded, quoted sub-post rather
-   * than the story's own post: Facebook renders a reshare/quote-share as
-   * the sharer's own header/message immediately followed by the shared
-   * post's own header/message, both using the same profile_name/
-   * story_message component family the CTA check keys off (live capture
-   * 2026-08-20: Suzanne Dousset resharing a "True Crime Society" Page post
-   * whose own "Send message" CTA got attributed to Suzanne's post
-   * instead). A second profile_name inside the story is the signature of a
-   * nested sub-post. DOM order isn't a reliable way to tell which post the
-   * CTA belongs to - in that capture the CTA sits before the second
-   * profile_name's own element position, even though it plainly belongs to
-   * the embedded post, because the profile_name attribute lands on a
-   * wrapper that closes later in the tree, not on the name text itself.
-   * Containment is reliable where order isn't: walk up from the CTA for an
-   * ancestor that holds the embedded post's profile_name but not the
-   * story's own (first) one - that ancestor is the embedded post's own
-   * boundary, and the CTA inside it belongs to that post, not this story.
+   * REVERTED 2026-08-20 (0.1.0.15 regression): a "second profile_name means
+   * an embedded quote-post" guard shipped in 0.1.0.15 to fix a genuine
+   * reshare false positive (Suzanne Dousset resharing a "True Crime
+   * Society" Page post). Live-tested against a real, ordinary post
+   * ("Everything Garage Doors and Sheds") and confirmed it also fires on a
+   * completely different, already-handled shape: a Page post shown inside
+   * a Group, where Facebook stamps a profile_name on the group-name
+   * breadcrumb *and* on the actual author - two profile_name elements with
+   * no reshare involved at all. That's exactly what hasGroupOrigin below
+   * already exists to catch; the new guard couldn't tell the two shapes
+   * apart and suppressed a real ad's CTA match. The reshare case it was
+   * built for is real but narrower than the false positives it introduced,
+   * so it's reverted here rather than patched again without another live
+   * capture of the specific failure to fix it against.
    */
-  function ctaButtonBelongsToEmbeddedPost(story, cta) {
-    const profileNames = story.querySelectorAll(
-      "[data-ad-rendering-role='profile_name']"
-    );
-    if (profileNames.length < 2) {
-      return false;
-    }
-    const [ownProfileName, ...embeddedProfileNames] = profileNames;
-    for (let node = cta.parentElement; node && node !== story; node = node.parentElement) {
-      if (
-        !node.contains(ownProfileName) &&
-        embeddedProfileNames.some((profileName) => node.contains(profileName))
-      ) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   function ctaButtonAdSignal(story) {
-    const cta = story.querySelector("[data-ad-rendering-role^='cta']");
-    if (!cta) {
+    if (!story.querySelector("[data-ad-rendering-role^='cta']")) {
       return null;
     }
     /*
@@ -1459,10 +1435,6 @@
      */
     if (hasGroupOrigin(story)) {
       counters.ctaButtonGroupOriginProtections += 1;
-      return null;
-    }
-    if (ctaButtonBelongsToEmbeddedPost(story, cta)) {
-      counters.ctaButtonEmbeddedPostProtections += 1;
       return null;
     }
     counters.ctaButtonMarkerMatches += 1;
@@ -3420,8 +3392,6 @@
         groupOriginProtections: counters.groupOriginProtections,
         ctaButtonGroupOriginProtections:
           counters.ctaButtonGroupOriginProtections,
-        ctaButtonEmbeddedPostProtections:
-          counters.ctaButtonEmbeddedPostProtections,
         foreignActorProtections: counters.foreignActorProtections,
         activityMatches: counters.activityMatches,
         marketplaceLabelCandidates: counters.marketplaceLabelCandidates,
