@@ -6,6 +6,36 @@ distributed zip is named to match, so a filename always tells you exactly
 which build it is. Everything before that shipped under 0.1.0.1, so those
 entries are grouped together and dated instead.
 
+## 0.1.0.16 - 2026-08-20
+- Reverted the 0.1.0.15 embedded-post CTA guard (`ctaButtonBelongsToEmbeddedPost`).
+  Reported symptom: in collapse mode, clicking "Show" on a collapsed
+  Sponsored post made it disappear (height collapsed to 0) instead of
+  expanding - Suggested posts were unaffected. Reported on Vivaldi;
+  investigated live via Claude in Chrome against the developer's own
+  Chrome/Facebook session once that access was set up.
+  `ctaButtonEmbeddedPostProtections` reading 0 in every diagnostics export
+  ruled out the guard as the direct cause of the reveal symptom itself, but
+  live DOM testing against a real, ordinary post ("Everything Garage Doors
+  and Sheds") found the guard firing (`true`) on a completely different,
+  already-handled shape it was never designed for: a Page post shown
+  inside a Group, where Facebook stamps a `profile_name` on the
+  group-name breadcrumb *and* on the actual author - two `profile_name`
+  elements with no reshare involved at all. That's exactly what the
+  existing `hasGroupOrigin` guard (0.1.0.12) already catches; the new
+  guard couldn't distinguish the two shapes and suppressed a real ad's CTA
+  match, which - given a story with prior classification state - can
+  strip `data-fffc-revealed` via `clearMatch()` on a subsequent
+  reclassification, matching the reported symptom's shape even though the
+  exact trigger differs from Rob's original session (his
+  `ctaButtonEmbeddedPostProtections` also read 0, meaning whatever tripped
+  the guard for him took a different path than this one). The reshare
+  false positive 0.1.0.15 fixed (Suzanne Dousset resharing a "True Crime
+  Society" Page post) is real but narrower than the false positives the
+  guard introduced, so it's reverted rather than patched again without a
+  live capture of the specific failure to fix it against. CTA-button
+  detection is back to exactly its 0.1.0.14 shape: `ctaButtonAdSignal` +
+  `hasGroupOrigin` only.
+
 ## 0.1.0.15 - 2026-08-20
 - Fixed a false-positive Sponsored classification on reshares: the
   CTA-button-marker signal (`ctaButtonAdSignal`) queries the whole story
