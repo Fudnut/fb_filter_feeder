@@ -314,6 +314,7 @@
     marketplaceDynamicAdmissions: 0,
     marketplaceCardsScanned: 0,
     marketplaceMatches: 0,
+    marketplaceAdsModules: 0,
     rightRailSponsoredHeadings: 0,
     rightRailSponsoredModules: 0,
     rightRailSuggestedGroupsHeadings: 0,
@@ -2782,6 +2783,45 @@
     return labels;
   }
 
+  function scanMarketplaceAdsModule() {
+    const modules = new Set();
+    if (/^\/marketplace\/item\/[^/]+\/?$/.test(location.pathname)) {
+      for (const heading of document.querySelectorAll("h2")) {
+        if (core.normalizeText(heading.textContent) !== "Ads") {
+          continue;
+        }
+        let section = heading.parentElement;
+        for (let depth = 0; section && section !== document.body && depth < 12; depth += 1) {
+          if (section.querySelectorAll("h2").length !== 1) {
+            break;
+          }
+          if (section.querySelector("a[href]") && section.querySelector("img,video")) {
+            modules.add(section);
+            break;
+          }
+          section = section.parentElement;
+        }
+      }
+    }
+    for (const section of document.querySelectorAll("[data-fffc-marketplace-ads='1']")) {
+      if (!modules.has(section)) {
+        delete section.dataset.fffcMarketplaceAds;
+      }
+    }
+    for (const section of modules) {
+      if (section.dataset.fffcMarketplaceAds === "1") {
+        continue;
+      }
+      section.dataset.fffcMarketplaceAds = "1";
+      section.dataset.fffcLabel = "Ads · Marketplace item";
+      counters.marketplaceAdsModules += 1;
+      counters.uniqueMatches += 1;
+      counters.classificationEvents += 1;
+      increment(counters.byReason, "marketplace-ads-module");
+      increment(counters.bySource, "marketplace-section");
+    }
+  }
+
   function marketplaceCardForLabel(element) {
     const labelRectangle = element.getBoundingClientRect?.();
     if (!hasPositiveRect(labelRectangle)) {
@@ -2947,6 +2987,7 @@
 
   // Marketplace uses a separate card boundary but the shared hide state.
   function scanMarketplace(admitVisible = false) {
+    scanMarketplaceAdsModule();
     if (/^\/marketplace\/you\/selling/.test(location.pathname)) {
       return;
     }
@@ -3300,6 +3341,9 @@
           (element) =>
             element.dataset.fffcSurfaceContainer === "marketplace-card"
         ).length,
+        marketplaceAds: document.querySelectorAll(
+          "[data-fffc-marketplace-ads='1']"
+        ).length,
         revealed: matches.filter(
           (element) => element.dataset.fffcRevealed === "1"
         ).length,
@@ -3401,6 +3445,7 @@
           counters.marketplaceDynamicAdmissions,
         marketplaceCardsScanned: counters.marketplaceCardsScanned,
         marketplaceMatches: counters.marketplaceMatches,
+        marketplaceAdsModules: counters.marketplaceAdsModules,
         rightRailSponsoredHeadings: counters.rightRailSponsoredHeadings,
         rightRailSponsoredModules: counters.rightRailSponsoredModules,
         rightRailSuggestedGroupsHeadings:

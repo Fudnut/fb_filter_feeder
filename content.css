@@ -11,8 +11,8 @@ html[data-fffc-enabled="1"][data-fffc-mode="hide"]
   [data-fffc-activity="1"]:not([data-fffc-revealed="1"]),
 html[data-fffc-enabled="1"][data-fffc-mode="hide"]
   [data-fffc-kind="ai-content"]:not([data-fffc-revealed="1"]),
-html[data-fffc-enabled="1"]:is([data-fffc-mode="hide"], [data-fffc-mode="collapse"])
-  [data-fffc-right-rail-sponsored="1"],
+html[data-fffc-enabled="1"]:is([data-fffc-mode="hide"], [data-fffc-mode="collapse"])[data-fffc-hide-sponsored="1"]
+  :is([data-fffc-right-rail-sponsored="1"], [data-fffc-marketplace-ads="1"]),
 html[data-fffc-enabled="1"]:is([data-fffc-mode="hide"], [data-fffc-mode="collapse"])[data-fffc-hide-stories="1"]
   [data-fffc-stories-tray="1"],
 html[data-fffc-enabled="1"]:is([data-fffc-mode="hide"], [data-fffc-mode="collapse"])[data-fffc-hide-suggested-groups="1"]
@@ -191,7 +191,7 @@ html[data-fffc-enabled="1"][data-fffc-mode="debug"]
 html[data-fffc-enabled="1"][data-fffc-mode="debug"]
   [data-fffc-kind="ai-content"]:not([data-fffc-revealed="1"]),
 html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-sponsored="1"]
-  [data-fffc-right-rail-sponsored="1"],
+  :is([data-fffc-right-rail-sponsored="1"], [data-fffc-marketplace-ads="1"]),
 html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-stories="1"]
   [data-fffc-stories-tray="1"],
 html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-suggested-groups="1"]
@@ -258,7 +258,7 @@ html[data-fffc-enabled="1"][data-fffc-mode="debug"]
 html[data-fffc-enabled="1"][data-fffc-mode="debug"]
   [data-fffc-kind="ai-content"]:not([data-fffc-revealed="1"])::before,
 html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-sponsored="1"]
-  [data-fffc-right-rail-sponsored="1"]::before,
+  :is([data-fffc-right-rail-sponsored="1"], [data-fffc-marketplace-ads="1"])::before,
 html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-stories="1"]
   [data-fffc-stories-tray="1"]::before,
 html[data-fffc-enabled="1"][data-fffc-mode="debug"][data-fffc-hide-suggested-groups="1"]

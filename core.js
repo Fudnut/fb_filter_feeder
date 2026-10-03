@@ -677,6 +677,7 @@
         groupChats: Number(current.groupChats || 0),
         storiesTray: Number(current.storiesTray || 0),
         marketplace: Number(current.marketplace || 0),
+        marketplaceAds: Number(current.marketplaceAds || 0),
         revealed: Number(current.revealed || 0),
         byReason: sortedCounter(safeObject(current.byReason)),
         bySource: sortedCounter(safeObject(current.bySource))

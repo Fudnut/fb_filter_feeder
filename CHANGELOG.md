@@ -6,6 +6,15 @@ distributed zip is named to match, so a filename always tells you exactly
 which build it is. Everything before that shipped under 0.1.0.1, so those
 entries are grouped together and dated instead.
 
+## 0.1.0.17 - 2026-10-03
+- Detect the "Ads" carousel on Marketplace item pages from its heading and
+  adjacent ad cards. Mark only that section, so the listing details remain
+  visible. The Sponsored toggle controls it in hide and collapse modes;
+  debug mode outlines it. Diagnostics now report `marketplaceAds` and
+  `marketplaceAdsModules` to confirm detection on a live page.
+- Make the existing right-sidebar Sponsored section honor the Sponsored
+  toggle when hide or collapse mode is selected.
+
 ## 0.1.0.16 - 2026-08-20
 - Reverted the 0.1.0.15 embedded-post CTA guard (`ctaButtonBelongsToEmbeddedPost`).
   Reported symptom: in collapse mode, clicking "Show" on a collapsed
