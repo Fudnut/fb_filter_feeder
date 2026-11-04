@@ -44,6 +44,14 @@
     ["7", "7 days"],
     ["30", "30 days"]
   ];
+  const HOME_FEED = [
+    ["off", "Facebook default"],
+    ["all", "Most recent (chronological)"],
+    ["favorites", "Favorites"],
+    ["friends", "Friends"],
+    ["groups", "Groups"],
+    ["pages", "Pages"]
+  ];
   const ALL_KEYS = [
     ...MAIN,
     ...SUGGESTED,
@@ -53,7 +61,8 @@
     "customWordFilters",
     "displayMode",
     "debugMode",
-    "marketplaceDateFilter"
+    "marketplaceDateFilter",
+    "homeFeed"
   ]);
 
   const CSS = `
@@ -141,6 +150,11 @@
           <div class="hint">Force newest listings from the last:</div>
           <div class="market">${radios("marketplaceDateFilter", MARKETPLACE)}</div>
         </details>
+        <details>
+          <summary>Home feed</summary>
+          <div class="hint">Open the home page on:</div>
+          <div class="market">${radios("homeFeed", HOME_FEED)}</div>
+        </details>
         <div class="row">
           <button class="act" data-act="reveal">Reveal all</button>
           <button class="act" data-act="reapply">Reapply</button>
@@ -168,6 +182,13 @@
       input.addEventListener("change", () => {
         chrome.storage.sync.set({ marketplaceDateFilter: input.value }, () => {
           statusLine.textContent = "Marketplace setting saved.";
+        });
+      });
+    }
+    for (const input of root.querySelectorAll("input[name='homeFeed']")) {
+      input.addEventListener("change", () => {
+        chrome.storage.sync.set({ homeFeed: input.value }, () => {
+          statusLine.textContent = "Home feed setting saved.";
         });
       });
     }
@@ -214,6 +235,12 @@
         : "off";
       for (const input of root.querySelectorAll("input[name='marketplaceDateFilter']")) {
         input.checked = input.value === market;
+      }
+      const homeFeed = HOME_FEED.some(([value]) => value === stored.homeFeed)
+        ? stored.homeFeed
+        : "off";
+      for (const input of root.querySelectorAll("input[name='homeFeed']")) {
+        input.checked = input.value === homeFeed;
       }
       const textarea = root.querySelector("textarea");
       if (root.activeElement !== textarea) {

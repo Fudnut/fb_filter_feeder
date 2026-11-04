@@ -24,6 +24,41 @@
       </div>
 
       <div id="tabPanelFilters" role="tabpanel" aria-labelledby="tabButtonFilters">
+      <section class="activity-card" aria-labelledby="homeFeedHeading">
+        <h2 id="homeFeedHeading">Home feed sorting</h2>
+        <p>
+          Opens the Facebook home page on the feed you choose instead of
+          Facebook's algorithmic order. Picking another Feeds tab yourself is
+          respected.
+        </p>
+        <div class="activity-list">
+          <label class="activity-row">
+            <span><strong>Facebook default</strong><small>Facebook's own algorithmic order</small></span>
+            <input type="radio" name="homeFeed" value="off">
+          </label>
+          <label class="activity-row">
+            <span><strong>Most recent (chronological)</strong><small>All posts, newest first</small></span>
+            <input type="radio" name="homeFeed" value="all">
+          </label>
+          <label class="activity-row">
+            <span><strong>Favorites</strong></span>
+            <input type="radio" name="homeFeed" value="favorites">
+          </label>
+          <label class="activity-row">
+            <span><strong>Friends</strong></span>
+            <input type="radio" name="homeFeed" value="friends">
+          </label>
+          <label class="activity-row">
+            <span><strong>Groups</strong></span>
+            <input type="radio" name="homeFeed" value="groups">
+          </label>
+          <label class="activity-row">
+            <span><strong>Pages</strong></span>
+            <input type="radio" name="homeFeed" value="pages">
+          </label>
+        </div>
+      </section>
+
       <section class="word-card" aria-labelledby="wordFilterHeading">
         <div class="status-row">
           <div>

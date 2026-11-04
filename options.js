@@ -93,6 +93,7 @@
       "enableWordFilters",
       "filterAiContent",
       "marketplaceDateFilter",
+      "homeFeed",
       "customWordFilters",
       ...core.ACTIVITY_FILTER_KEYS,
       ...core.SUGGESTED_SUBCATEGORY_KEYS
@@ -134,6 +135,22 @@
               status.textContent = "Marketplace filter preference saved.";
             }
           );
+        });
+      }
+
+      const homeFeedValue = [
+        "off", "all", "favorites", "friends", "groups", "pages"
+      ].includes(stored.homeFeed)
+        ? stored.homeFeed
+        : "off";
+      for (const homeFeedInput of document.querySelectorAll(
+        "input[name='homeFeed']"
+      )) {
+        homeFeedInput.checked = homeFeedInput.value === homeFeedValue;
+        homeFeedInput.addEventListener("change", (event) => {
+          chrome.storage.sync.set({ homeFeed: event.target.value }, () => {
+            status.textContent = "Home feed preference saved.";
+          });
         });
       }
     }

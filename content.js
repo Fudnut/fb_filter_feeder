@@ -115,6 +115,54 @@
   }
   applyMarketplaceDateFilter();
 
+  const HOME_FEED_VALUES = new Set(["all", "favorites", "friends", "groups", "pages"]);
+  const HOME_FEED_STORAGE_KEY = "fffc:homeFeedRedirectAt";
+  const HOME_FEED_LOOP_GUARD_MS = 5000;
+
+  function readLastHomeFeedRedirect() {
+    try {
+      return JSON.parse(sessionStorage.getItem(HOME_FEED_STORAGE_KEY));
+    } catch (_error) {
+      return null;
+    }
+  }
+
+  // Sends the bare home URL to the chosen Feeds view. A URL that already has
+  // "sk" or "filter" is a tab the user picked, so it is never overridden.
+  function applyHomeFeedChoice() {
+    const url = new URL(location.href);
+    if (
+      location.pathname !== "/" ||
+      url.searchParams.has("sk") ||
+      url.searchParams.has("filter")
+    ) {
+      return;
+    }
+    const last = readLastHomeFeedRedirect();
+    if (last && Date.now() - last.at < HOME_FEED_LOOP_GUARD_MS) {
+      return;
+    }
+    chrome.storage.sync.get(["homeFeed"], (stored) => {
+      const feed = stored.homeFeed;
+      if (!HOME_FEED_VALUES.has(feed)) {
+        return;
+      }
+      try {
+        sessionStorage.setItem(
+          HOME_FEED_STORAGE_KEY,
+          JSON.stringify({ at: Date.now(), feed })
+        );
+      } catch (_error) {
+        // Without the guard timestamp a redirect could loop, so give up.
+        return;
+      }
+      url.searchParams.set("filter", feed);
+      url.searchParams.set("sk", "h_chr");
+      location.replace(url.toString());
+    });
+  }
+  applyHomeFeedChoice();
+
   const core = globalThis.__FFFC_CORE__;
   const BUILD_VERSION =
     chrome.runtime.getManifest().version_name ||
@@ -3297,6 +3345,7 @@
         contentScriptVersion: BUILD_VERSION
       },
       surface: core.surfaceKind(location.pathname),
+      homeFeed: { lastRedirect: readLastHomeFeedRedirect() },
       language: String(document.documentElement.lang || "unknown").slice(0, 24),
       settings: {
         enabled: settings.enabled,
@@ -3500,7 +3549,9 @@
     return (
       counters.headerCandidatesChecked >=
         TEXT_DISCLOSURE_BREAKAGE_MIN_HEADER_CANDIDATES &&
-      counters.uniqueMatches > 0 &&
+      // Only ad/Sponsored matches can come from disclosure text; Suggested,
+      // Reels, Stories and module matches never do, so they must not count.
+      counters.adMatches + counters.sponsoredMatches > 0 &&
       textDisclosureMatchTotal() === 0
     );
   }
@@ -3511,7 +3562,8 @@
     }
     textDisclosureBreakageWarned = true;
     console.warn(
-      `[feed-bouncer] ${counters.uniqueMatches} matches found this session, ` +
+      `[feed-bouncer] ${counters.adMatches + counters.sponsoredMatches} ` +
+        `ad/Sponsored matches found this session, ` +
         `none from literal disclosure text (checked ` +
         `${counters.headerCandidatesChecked} header candidates). Detection ` +
         `is running on heuristic fallbacks only - this is the signature a ` +
@@ -3552,6 +3604,7 @@
       if (location.href !== lastLocationHref) {
         lastLocationHref = location.href;
         applyMarketplaceDateFilter();
+        applyHomeFeedChoice();
         counters.navigationRescans += 1;
         runReconciliation("route-change", true);
         return;
@@ -3566,6 +3619,7 @@
     window.addEventListener("popstate", () => {
       lastLocationHref = location.href;
       applyMarketplaceDateFilter();
+      applyHomeFeedChoice();
       counters.navigationRescans += 1;
       runReconciliation("popstate", true);
     });

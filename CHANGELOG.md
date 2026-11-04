@@ -6,6 +6,31 @@ distributed zip is named to match, so a filename always tells you exactly
 which build it is. Everything before that shipped under 0.1.0.1, so those
 entries are grouped together and dated instead.
 
+## 0.1.0.18 - 2026-11-04
+- Add an opt-in "Home feed sorting" setting (top of the options page
+  Filters tab, and the userscript panel). Choices: Facebook default (off),
+  Most recent (chronological), Favorites, Friends,
+  Groups, Pages. When set, the bare home URL redirects to
+  `/?filter=<choice>&sk=h_chr`. URLs verified on live Facebook 2026-11-04.
+- Only the bare home URL is redirected. A URL that already has `sk` or
+  `filter` is left alone, so a Feeds tab you pick yourself is respected.
+- A 5 s loop guard (`sessionStorage` key `fffc:homeFeedRedirectAt`) stops
+  repeated redirects.
+- Clicking Home or the logo inside the site can take up to about 2 s to
+  redirect, because it relies on the existing 2 s route-change interval.
+- Diagnostics now report `homeFeed.lastRedirect` (time and choice of the
+  last redirect, or null) to confirm the redirect fired on the landed page.
+- Fixed a false "[feed-bouncer] ... none from literal disclosure text"
+  warning that showed on the browser's extension Errors page in nearly
+  every session since the breakage detector was added. It compared
+  disclosure-text matches against `uniqueMatches`, which also counts
+  Suggested posts, Reels, the Stories tray, right-rail modules and
+  Marketplace matches - none of which ever carry disclosure text. It now
+  compares against ad/Sponsored matches only (`adMatches` +
+  `sponsoredMatches`), so it fires only when ads are found and none of
+  them by their label text. The diagnostics `textDisclosureDetectionSuspect`
+  field uses the same check.
+
 ## 0.1.0.17 - 2026-10-03
 - Detect the "Ads" carousel on Marketplace item pages from its heading and
   adjacent ad cards. Mark only that section, so the listing details remain
