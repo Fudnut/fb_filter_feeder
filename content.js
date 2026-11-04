@@ -3545,13 +3545,24 @@
     );
   }
 
+  // Only ad/Sponsored matches can come from disclosure text; Suggested,
+  // Reels, Stories and module matches never do. CTA-button matches don't
+  // either: findAdSignal returns on them before any text detector runs, so a
+  // session where every ad has a Shop Now/Learn More button would otherwise
+  // look broken (0.1.0.18 tester report).
+  function textCheckedAdMatches() {
+    return (
+      counters.adMatches +
+      counters.sponsoredMatches -
+      counters.ctaButtonMarkerMatches
+    );
+  }
+
   function isTextDisclosureDetectionSuspect() {
     return (
       counters.headerCandidatesChecked >=
         TEXT_DISCLOSURE_BREAKAGE_MIN_HEADER_CANDIDATES &&
-      // Only ad/Sponsored matches can come from disclosure text; Suggested,
-      // Reels, Stories and module matches never do, so they must not count.
-      counters.adMatches + counters.sponsoredMatches > 0 &&
+      textCheckedAdMatches() > 0 &&
       textDisclosureMatchTotal() === 0
     );
   }
@@ -3562,7 +3573,7 @@
     }
     textDisclosureBreakageWarned = true;
     console.warn(
-      `[feed-bouncer] ${counters.adMatches + counters.sponsoredMatches} ` +
+      `[feed-bouncer] ${textCheckedAdMatches()} ` +
         `ad/Sponsored matches found this session, ` +
         `none from literal disclosure text (checked ` +
         `${counters.headerCandidatesChecked} header candidates). Detection ` +

@@ -6,6 +6,15 @@ distributed zip is named to match, so a filename always tells you exactly
 which build it is. Everything before that shipped under 0.1.0.1, so those
 entries are grouped together and dated instead.
 
+## 0.1.0.19 - 2026-11-05
+- Fix the false "[feed-bouncer] ... none from literal disclosure text"
+  warning, which still showed in 0.1.0.18. Ads found by the Shop Now/Learn
+  More button marker (`ctaButtonMarkerMatches`) never reach the text
+  detectors, because `findAdSignal` returns first. They no longer count
+  toward the check, so a session where every ad has a CTA button is not
+  reported as broken. Diagnostics `textDisclosureDetectionSuspect` uses
+  the same check.
+
 ## 0.1.0.18 - 2026-11-04
 - Add an opt-in "Home feed sorting" setting (top of the options page
   Filters tab, and the userscript panel). Choices: Facebook default (off),
