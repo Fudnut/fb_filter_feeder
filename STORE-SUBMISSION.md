@@ -9,10 +9,8 @@ Prepared 2026-11-08. Store rules change; confirm each item in the live dashboard
    (for example a GitHub Pages page or a public gist). I cannot host it for you.
 2. **Screenshots.** Chrome needs at least 1 (1280x800 or 640x400, up to 5). Firefox accepts screenshots too.
    Take them on your own feed. Blur names, faces and post text of other people.
-3. **Firefox minimum version.** `manifest.json` has `strict_min_version "109.0"` plus `data_collection_permissions`.
-   Mozilla says that field needs Firefox 140+, and reports say Firefox 127 and older reject it.
-   Decide: (a) set `strict_min_version` to `140.0` (Mozilla's advice, smaller audience), or (b) keep 109 and accept
-   a possible install warning on old Firefox. I have not changed it.
+3. **Firefox minimum version.** Done: `strict_min_version` is 140.0 (desktop) and `gecko_android` 142.0, because AMO warned that
+   `data_collection_permissions` needs those versions. Chrome keeps `minimum_chrome_version` 109.
 4. **Name risk.** The new name "FluffBlock Purity" no longer contains "FB" or "Facebook", which lowers trademark risk.
    The description still says "Facebook" to describe what it does, plus a "not affiliated with Meta" line. Check the name
    is free in both stores (search each) before submitting. "FBP" is only a short label; it is not used in the manifest.
@@ -74,7 +72,7 @@ FluffBlock Purity is an independent project. It is not affiliated with, endorsed
 - **Distribution:** "On this site" (listed on AMO).
 - **Source code upload:** No. The code is plain, unminified JavaScript and the zip is the source. No build step.
 - **Experimental:** No. **Paid or non-free services:** No.
-- **Add-on ID:** `fb-feed-filter@kalzac.net` (kept, as you decided). The manifest declares `data_collection_permissions: required: ["none"]`.
+- **Add-on ID:** `fluffblock-purity@kalzac.net` (new, 2026-11-09). The old `fb-feed-filter@kalzac.net` belongs to the AMO test add-on, so the public listing needs its own ID. The manifest declares `data_collection_permissions: required: ["none"]`.
 - **Privacy policy:** Required only if data leaves the device. None does. You may still paste section 5.
 - **Notes for reviewers:** "Plain JavaScript, no build, no minification, no remote code, no network requests. Only acts on facebook.com and needs a Facebook login to see an effect. To see it work: open facebook.com, click the toolbar icon, choose Debug mode; Sponsored posts get a red outline. Permissions: storage (settings), activeTab and scripting (popup injects the packaged content script), host access to facebook.com (content script)."
 - **Review risk:** MV3 host permissions are user-grantable in Firefox. Users may need to allow facebook.com in the extension's permissions if the filter seems inactive. Mention this in the description if you want fewer support emails.

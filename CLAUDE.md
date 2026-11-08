@@ -4,7 +4,8 @@
 
 - Store name: "FluffBlock Purity" (short name "FluffBlock"). Earlier names:
   "FB Feed Filter", "Feed Bouncer". Keep the Firefox id
-  `fb-feed-filter@kalzac.net` unchanged. Store submission details are in
+  `fluffblock-purity@kalzac.net` unchanged. The older `fb-feed-filter@kalzac.net`
+  belongs to the AMO test add-on and cannot be reused. Store submission details are in
   `STORE-SUBMISSION.md`.
 - Text the user types (custom word filters) goes in `storage.local`, never
   `storage.sync`. Use `core.loadCustomWordFilters`.

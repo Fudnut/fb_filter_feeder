@@ -9,6 +9,9 @@ entries are grouped together and dated instead.
 ## 0.1.0.21 - 2026-11-09
 - Version bump only. Firefox Add-ons rejected 0.1.0.20 as an already used
   version number. No code changes from 0.1.0.20.
+- Firefox: new add-on ID `fluffblock-purity@kalzac.net` for the public AMO listing
+  (the old ID belongs to the test add-on). Minimum Firefox 140 (Android 142)
+  to match `data_collection_permissions`.
 
 ## 0.1.0.20 - 2026-11-08
 - Store submission build. Renamed to "FluffBlock Purity" (short name
