@@ -6,6 +6,18 @@ distributed zip is named to match, so a filename always tells you exactly
 which build it is. Everything before that shipped under 0.1.0.1, so those
 entries are grouped together and dated instead.
 
+## 0.1.0.20 - 2026-11-08
+- Store submission build. Renamed to "FluffBlock Purity" (short name
+  "FluffBlock"), new FBP shield icons, "Version" label in place of
+  "Testing build".
+- Custom word filters are now stored in `storage.local`, so words the user
+  types are never synced to the browser account. Existing lists in
+  `storage.sync` are copied to local on first run, then removed from sync
+  (`core.loadCustomWordFilters`). Other settings stay in sync storage.
+- The userscript shim maps `storage.local` to its single GM store.
+- Licence changed from MIT to Mozilla Public License 2.0 (`LICENSE`).
+- Add 32 and 64 px icons (recommended by Mozilla).
+
 ## 0.1.0.19 - 2026-11-05
 - Fix the false "[feed-bouncer] ... none from literal disclosure text"
   warning, which still showed in 0.1.0.18. Ads found by the Shop Now/Learn

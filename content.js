@@ -493,15 +493,16 @@
         "hideGroupChats",
         "enableWordFilters",
         "filterAiContent",
-        "customWordFilters",
         "displayMode",
         "debugMode",
         ...core.ACTIVITY_FILTER_KEYS,
         ...core.SUGGESTED_SUBCATEGORY_KEYS
       ],
       (stored) => {
-        applySettings(stored);
-        runReconciliation("settings");
+        core.loadCustomWordFilters((customWordFilters) => {
+          applySettings({ ...stored, customWordFilters });
+          runReconciliation("settings");
+        });
       }
     );
   }
@@ -3706,7 +3707,8 @@
   }
 
   chrome.storage.onChanged.addListener((changes, areaName) => {
-    if (areaName !== "sync") {
+    // Word filters live in "local", everything else in "sync".
+    if (areaName !== "sync" && areaName !== "local") {
       return;
     }
     const next = { ...settings };

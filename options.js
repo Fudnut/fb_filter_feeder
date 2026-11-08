@@ -63,7 +63,7 @@
     const customWordFilters = filters.join("\n");
     input.value = customWordFilters;
     renderCount(filters);
-    chrome.storage.sync.set({ customWordFilters }, () => {
+    chrome.storage.local.set({ customWordFilters }, () => {
       status.textContent = chrome.runtime.lastError
         ? `Could not save: ${chrome.runtime.lastError.message}`
         : filters.length
@@ -74,7 +74,7 @@
 
   function clearFilters() {
     input.value = "";
-    chrome.storage.sync.set({ customWordFilters: "" }, () => {
+    chrome.storage.local.set({ customWordFilters: "" }, () => {
       renderCount([]);
       status.textContent = "Word filter list cleared.";
     });
@@ -88,17 +88,18 @@
     });
   }
 
+  core.loadCustomWordFilters((customWordFilters) => {
   chrome.storage.sync.get(
     [
       "enableWordFilters",
       "filterAiContent",
       "marketplaceDateFilter",
       "homeFeed",
-      "customWordFilters",
       ...core.ACTIVITY_FILTER_KEYS,
       ...core.SUGGESTED_SUBCATEGORY_KEYS
     ],
     (stored) => {
+      stored.customWordFilters = customWordFilters;
       const filters = core.normalizeCustomWordFilters(
         stored.customWordFilters
       );
@@ -155,6 +156,7 @@
       }
     }
   );
+  });
 
   document
     .getElementById("enableAllActivity")

@@ -702,6 +702,31 @@
     };
   }
 
+  /*
+   * Custom word filters are text the user typed, so they are kept in
+   * storage.local and never synced to the browser account. Earlier builds
+   * stored them in storage.sync; move any such value over once, then
+   * remove the synced copy.
+   */
+  function loadCustomWordFilters(callback) {
+    chrome.storage.local.get(["customWordFilters"], (local) => {
+      if (typeof local.customWordFilters === "string") {
+        callback(local.customWordFilters);
+        return;
+      }
+      chrome.storage.sync.get(["customWordFilters"], (old) => {
+        const value =
+          typeof old.customWordFilters === "string" ? old.customWordFilters : "";
+        if (value) {
+          chrome.storage.local.set({ customWordFilters: value }, () => {
+            chrome.storage.sync.remove?.("customWordFilters");
+          });
+        }
+        callback(value);
+      });
+    });
+  }
+
   global.__FFFC_CORE__ = Object.freeze({
     generation: GENERATION,
     ACTIVITY_FILTER_KEYS,
@@ -710,6 +735,7 @@
     matchesAiContentLabel,
     normalizeText,
     normalizeCustomWordFilters,
+    loadCustomWordFilters,
     matchCustomWordFilter,
     normalizeDisclosureLabel,
     adKindForLabel,

@@ -175,6 +175,7 @@ const chrome = (() => {
   return {
     storage: {
       sync,
+      local: sync, // one GM store backs both areas
       onChanged: {
         addListener(listener) {
           changeListeners.push(listener);

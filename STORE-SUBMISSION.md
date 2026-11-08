@@ -1,6 +1,6 @@
 # FluffBlock Purity: store submission pack
 
-Publisher: Steve Rose, beachie41@gmail.com. Package: `FluffBlock-Purity-0.1.0.19.zip` (same zip for both stores).
+Publisher: Steve Rose, beachie41@gmail.com. Package: `FluffBlock-Purity-0.1.0.20.zip` (same zip for both stores).
 Prepared 2026-11-08. Store rules change; confirm each item in the live dashboard.
 
 ## 0. Do these first (blockers and decisions)
@@ -16,11 +16,14 @@ Prepared 2026-11-08. Store rules change; confirm each item in the live dashboard
 4. **Name risk.** The new name "FluffBlock Purity" no longer contains "FB" or "Facebook", which lowers trademark risk.
    The description still says "Facebook" to describe what it does, plus a "not affiliated with Meta" line. Check the name
    is free in both stores (search each) before submitting. "FBP" is only a short label; it is not used in the manifest.
-5. **"Testing build" text.** `popup.html` and `options.html` still show "Testing build <version>". Change it before
-   publishing (suggested: just "Version <version>"). Needs a new zip.
+5. **"Testing build" text.** Done: now "Version <number>".
 6. **Account setup.** Chrome Web Store developer account (one-time registration fee, about 5 USD, 2-step
    verification) with publisher name Steve Rose and contact email beachie41@gmail.com. Firefox: free
    addons.mozilla.org account. The EU trader/non-trader declaration on Chrome is yours to answer.
+
+## 0b. Review notes (Astra / Qwen draft, 24 Aug 2026, checked 2026-11-08)
+
+Astra's conversation (`Qwen.txt`) agreed with this pack and added: move word filters to local storage (done in 0.1.0.20), declare "website content" as handled in Chrome (done above), include a Limited Use statement in the policy (done), keep competitor names out of the listing (none used), and prepare screenshots of the real UI. Decided 2026-11-08: licence is MPL 2.0 (LICENSE replaced); 32 and 64 px icons added to the manifest (Mozilla's recommendation). Letters in the icon: kept, since other store listings use lettering. Astra left the disabled "Deleted Friends" and unverified AI-content filters out of the public description; the description below does the same. Not adopted: a separate public website; a GitHub Pages page is enough.
 
 ## 1. Listing text (both stores)
 
@@ -52,17 +55,17 @@ FluffBlock Purity is an independent project. It is not affiliated with, endorsed
 **Category:** Chrome: Productivity (or Social & Communication). Firefox: Social & Communication, plus Privacy & Security.
 **Language:** English.
 **Support email:** beachie41@gmail.com. **Homepage / support URL:** your GitHub repo or a page you choose (decide).
-**License (Firefox):** MIT (the `LICENSE` file in the zip is MIT).
+**License (Firefox):** Mozilla Public License 2.0 (the `LICENSE` file in the zip is MPL 2.0).
 
 ## 2. Chrome Web Store: Privacy tab answers
 
 - **Single purpose:** Remove unwanted content (ads, Sponsored, Suggested posts, Reels, Stories and posts matching the user's words) from the Facebook feed, as the user chooses.
 - **Permission justifications:**
-  - `storage`: saves the user's filter settings and word list (`chrome.storage.sync`).
+  - `storage`: saves the user's filter settings. Ordinary on/off preferences use browser sync storage. Custom word-filter terms (text the user types) are kept in local storage only and are never synced.
   - `activeTab` and `scripting`: when the user opens the popup on a Facebook tab where the filter script is not yet running, the popup injects the extension's own `content.js`, `core.js` and `content.css` into that tab. Also used by Reapply, Reveal all and Export diagnostics. Only files packaged in the extension are injected.
   - Host permissions `https://facebook.com/*` and `https://*.facebook.com/*`: the content script reads the page to find and hide matching posts. It runs only on Facebook.
 - **Remote code:** No, I am not using remote code. (No fetch, XHR, eval or remote scripts; I checked `core.js`, `content.js`, `popup.js` and `options.js`.)
-- **Data usage disclosures:** Tick no data types as collected. Nothing is transmitted or stored off the device. The extension reads page content locally to classify posts. If the dashboard's wording treats local-only page reading as "website content", read its definition and answer accordingly. Certify the three limited-use statements (no selling, no unrelated use, no creditworthiness use).
+- **Data usage disclosures:** Declare that the extension handles **Website content**: it reads visible Facebook page text, links and labels to classify posts. Handled locally: yes. Transmitted to the developer or anyone else: no. Sold or shared for advertising: no. Analytics or tracking: no. Do not claim "no user data" just because nothing is uploaded; Chrome counts local processing of page content. Certify the three limited-use statements. (This replaces my earlier "tick nothing" advice, after the Astra review below.)
 - **Privacy policy URL:** (the URL you host, section 5).
 - **Test instructions for reviewers:** The extension only acts on facebook.com and needs a logged-in Facebook account to see any effect. Suggest: open facebook.com, click the toolbar icon, set display mode to "Debug (outline)"; Sponsored posts then get a red outline and label. No credentials are provided because none can be shared.
 
@@ -85,23 +88,33 @@ FluffBlock Purity is an independent project. It is not affiliated with, endorsed
 | Small promo tile 440x280 | optional (listed higher if present) | n/a | Optional |
 | Marquee 1400x560 | optional | n/a | Optional |
 | Privacy policy URL | yes | only if data sent | Steve to host |
-| Zip | `FluffBlock-Purity-0.1.0.19.zip` | same | Built; rebuild after item 0.5 |
+| Zip | `FluffBlock-Purity-0.1.0.20.zip` | same | Built (0.1.0.20) |
 
 ## 5. Privacy policy (host this text)
 
 **FluffBlock Purity: Privacy Policy** (last updated 2026-11-08)
 
-FluffBlock Purity ("the extension") is published by Steve Rose (beachie41@gmail.com).
+FluffBlock Purity ("the extension") is published by Steve Rose (beachie41@gmail.com). It filters selected content while you browse Facebook.
 
-**What the extension does with data.** The extension runs only on facebook.com. It reads the web page in your browser to decide which posts to hide or outline. This happens entirely on your device. The extension does not send page content, your Facebook activity, your identity or any other data to the publisher or to any third party. It has no accounts, analytics, advertising or tracking.
+**Information processed.** To filter, the extension examines content rendered on facebook.com pages inside your browser: visible page text, links, labels and page structure. This processing happens locally in your browser.
 
-**What is stored.** Your settings (which filters are on, display mode, your custom word list, home-feed choice) are saved with your browser's extension storage. If you use browser sync, your browser may sync these settings to your own browser account under the browser vendor's terms. The publisher cannot see them.
+**Information sent to the developer.** None. The extension does not transmit Facebook page content, posts, messages, names, account identifiers, cookies, authentication information or browsing history to the developer or anyone else. It has no analytics, advertising or tracking service.
 
-**Diagnostics.** The "Export diagnostics" and "Export DOM" buttons create a file on your device only when you click them. The file is not sent anywhere unless you choose to send it, for example by email to the support address. A DOM export can contain text visible on your Facebook page; review it before sharing.
+**Settings.** Ordinary on/off preferences use browser-provided synchronized storage, so your browser provider may sync them between your devices if you use browser sync. Custom word and phrase filters you type are stored locally in your browser and are not synced or transmitted by the extension.
 
-**Third parties.** None. The extension is not affiliated with Meta Platforms, Inc.
+**Diagnostics.** "Export diagnostics" saves a file of detector information and counts to your device when you click it. "Export DOM" saves a troubleshooting file that can contain visible page text, author names and links. Neither file is uploaded automatically. Review the DOM file before you share it with anyone.
 
-**Changes and contact.** If this policy changes, the date above will change. Questions: beachie41@gmail.com.
+**Sale or sharing.** The extension does not sell user information or share it with advertising networks, data brokers or other third parties, and does not use it for personalised, retargeted or interest-based advertising.
+
+**Retention.** The developer keeps no database of user browsing information. Stored preferences stay in your browser or browser sync service until you change, clear or remove them.
+
+**Chrome Web Store Limited Use.** The use of information received through browser APIs by FluffBlock Purity adheres to the Chrome Web Store User Data Policy, including the Limited Use requirements. Information is used only to provide the extension's user-facing filtering features.
+
+**Third party platform.** FluffBlock Purity is independent and is not affiliated with, sponsored by or endorsed by Meta Platforms, Inc. Facebook is a trademark of Meta Platforms, Inc.
+
+**Changes.** If data handling changes, this policy and any required disclosures will be updated before the change takes effect.
+
+**Contact.** beachie41@gmail.com
 
 ## 6. Submission steps
 
