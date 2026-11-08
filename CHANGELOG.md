@@ -95,7 +95,7 @@ entries are grouped together and dated instead.
   exact trigger differs from Rob's original session (his
   `ctaButtonEmbeddedPostProtections` also read 0, meaning whatever tripped
   the guard for him took a different path than this one). The reshare
-  false positive 0.1.0.15 fixed (Suzanne Dousset resharing a "True Crime
+  false positive 0.1.0.15 fixed (a user resharing a "True Crime
   Society" Page post) is real but narrower than the false positives the
   guard introduced, so it's reverted rather than patched again without a
   live capture of the specific failure to fix it against. CTA-button
@@ -111,7 +111,7 @@ entries are grouped together and dated instead.
   post's own header/message, both through the same component family the
   CTA check keys off - so a CTA on the *embedded* post (a Page's own "Send
   message"/"Shop now" button) was getting attributed to the sharer's own
-  post instead (live capture 2026-08-20: Suzanne Dousset resharing a "True
+  post instead (live capture 2026-08-20: a user resharing a "True
   Crime Society" Page post, collapsed as "Sponsored · 100%"). New
   `ctaButtonBelongsToEmbeddedPost()` guard detects a second
   `data-ad-rendering-role='profile_name'` inside the story (the signature

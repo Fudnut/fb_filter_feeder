@@ -2,3 +2,6 @@
 .DS_Store
 Thumbs.db
 node_modules/
+# Store submission notes and image working files: local only
+STORE-SUBMISSION.md
+store-assets/icon-candidate-*

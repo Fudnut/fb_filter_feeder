@@ -1455,7 +1455,7 @@
   /*
    * REVERTED 2026-08-20 (0.1.0.15 regression): a "second profile_name means
    * an embedded quote-post" guard shipped in 0.1.0.15 to fix a genuine
-   * reshare false positive (Suzanne Dousset resharing a "True Crime
+   * reshare false positive (a user resharing a "True Crime
    * Society" Page post). Live-tested against a real, ordinary post
    * ("Everything Garage Doors and Sheds") and confirmed it also fires on a
    * completely different, already-handled shape: a Page post shown inside

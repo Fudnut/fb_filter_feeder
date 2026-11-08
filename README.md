@@ -102,8 +102,8 @@ fb_filter_feeder/
 ├── icons/               # Extension icons (16, 32, 48, 64, 128 px)
 ├── userscript/          # Wrapper that builds a userscript version
 ├── store-assets/        # Store images and screenshots (not part of the extension package)
-├── STORE-SUBMISSION.md  # Notes for Chrome Web Store and Firefox Add-ons submission
 ├── CHANGELOG.md         # Full version history
+├── PRIVACY.md           # Privacy policy
 └── LICENSE              # Mozilla Public License 2.0
 ```
 
@@ -160,7 +160,7 @@ To package a release, zip `manifest.json`, `core.js`, `content.js`, `content.css
 - ✅ Custom word filters stay in local storage and are not synced
 - ✅ Export files are created only when you click, and saved on your device
 
-The extension reads visible page content on `facebook.com` on your device to classify posts. The full policy is in [STORE-SUBMISSION.md](STORE-SUBMISSION.md#5-privacy-policy-host-this-text).
+The extension reads visible page content on `facebook.com` on your device to classify posts. The full policy is in [PRIVACY.md](PRIVACY.md).
 
 ## 📄 License
 
