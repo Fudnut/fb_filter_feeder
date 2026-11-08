@@ -125,9 +125,9 @@
     const root = host.attachShadow({ mode: "open" });
     root.innerHTML = `
       <style>${CSS}</style>
-      <button class="fab" title="FB Feed Filter settings">FF</button>
+      <button class="fab" title="FB Purity Feed Filter settings">FF</button>
       <div class="panel" hidden>
-        <h1>Feed Filter <small>v${escapeHtml(FFFC_VERSION)}</small></h1>
+        <h1>FB Purity Feed Filter <small>v${escapeHtml(FFFC_VERSION)}</small></h1>
         ${MAIN.map(([k, l]) => checkbox(k, escapeHtml(l))).join("")}
         <div class="modes">${radios("displayMode", MODES)}</div>
         <details>
@@ -279,7 +279,7 @@
     }
     build();
     if (fffcGM.menu) {
-      fffcGM.menu("Feed Filter settings", () => {
+      fffcGM.menu("FB Purity Feed Filter settings", () => {
         if (panel.hidden) {
           togglePanel();
         }
