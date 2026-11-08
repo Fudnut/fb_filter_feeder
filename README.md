@@ -1,7 +1,7 @@
 # FluffBlock Purity
 
 ![License](https://img.shields.io/badge/license-MPL%202.0-blue.svg)
-![Version](https://img.shields.io/badge/version-0.1.0.20-green.svg)
+![Version](https://img.shields.io/badge/version-0.1.0.21-green.svg)
 ![Manifest](https://img.shields.io/badge/manifest-v3-orange.svg)
 ![Browsers](https://img.shields.io/badge/browsers-Chrome%20%7C%20Firefox-lightgrey.svg)
 
@@ -169,6 +169,9 @@ This project is licensed under the Mozilla Public License 2.0. See the [LICENSE]
 ## 🔄 Changelog
 
 The full history is in [CHANGELOG.md](CHANGELOG.md). Recent versions:
+
+### Version 0.1.0.21 (2026-11-09)
+- Version bump for the Firefox Add-ons upload. No code changes.
 
 ### Version 0.1.0.20 (2026-11-08)
 - **Renamed to FluffBlock Purity** (short name FluffBlock), with new FBP shield icons including 32 and 64 px

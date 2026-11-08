@@ -6,6 +6,10 @@ distributed zip is named to match, so a filename always tells you exactly
 which build it is. Everything before that shipped under 0.1.0.1, so those
 entries are grouped together and dated instead.
 
+## 0.1.0.21 - 2026-11-09
+- Version bump only. Firefox Add-ons rejected 0.1.0.20 as an already used
+  version number. No code changes from 0.1.0.20.
+
 ## 0.1.0.20 - 2026-11-08
 - Store submission build. Renamed to "FluffBlock Purity" (short name
   "FluffBlock"), new FBP shield icons, "Version" label in place of

@@ -1,6 +1,6 @@
 # FluffBlock Purity: store submission pack
 
-Publisher: Steve Rose, beachie41@gmail.com. Package: `FluffBlock-Purity-0.1.0.20.zip` (same zip for both stores).
+Publisher: Steve Rose, beachie41@gmail.com. Package: `FluffBlock-Purity-0.1.0.21.zip` (same zip for both stores).
 Prepared 2026-11-08. Store rules change; confirm each item in the live dashboard.
 
 ## 0. Do these first (blockers and decisions)
@@ -88,7 +88,7 @@ FluffBlock Purity is an independent project. It is not affiliated with, endorsed
 | Small promo tile 440x280 | optional (listed higher if present) | n/a | Optional |
 | Marquee 1400x560 | optional | n/a | Optional |
 | Privacy policy URL | yes | only if data sent | Steve to host |
-| Zip | `FluffBlock-Purity-0.1.0.20.zip` | same | Built (0.1.0.20) |
+| Zip | `FluffBlock-Purity-0.1.0.21.zip` | same | Built (0.1.0.21) |
 
 ## 5. Privacy policy (host this text)
 
