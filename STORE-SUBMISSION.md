@@ -1,6 +1,6 @@
-# FB Purity Feed Filter: store submission pack
+# FluffBlock Purity: store submission pack
 
-Publisher: Steve Rose, beachie41@gmail.com. Package: `FB-Purity-Feed-Filter-0.1.0.19.zip` (same zip for both stores).
+Publisher: Steve Rose, beachie41@gmail.com. Package: `FluffBlock-Purity-0.1.0.19.zip` (same zip for both stores).
 Prepared 2026-11-08. Store rules change; confirm each item in the live dashboard.
 
 ## 0. Do these first (blockers and decisions)
@@ -13,8 +13,9 @@ Prepared 2026-11-08. Store rules change; confirm each item in the live dashboard
    Mozilla says that field needs Firefox 140+, and reports say Firefox 127 and older reject it.
    Decide: (a) set `strict_min_version` to `140.0` (Mozilla's advice, smaller audience), or (b) keep 109 and accept
    a possible install warning on old Firefox. I have not changed it.
-4. **Name risk.** "FB" and "Facebook" are Meta trademarks. Both stores can remove listings that look affiliated.
-   The descriptions below include a "not affiliated with Meta" line. Expect this to be the main review risk.
+4. **Name risk.** The new name "FluffBlock Purity" no longer contains "FB" or "Facebook", which lowers trademark risk.
+   The description still says "Facebook" to describe what it does, plus a "not affiliated with Meta" line. Check the name
+   is free in both stores (search each) before submitting. "FBP" is only a short label; it is not used in the manifest.
 5. **"Testing build" text.** `popup.html` and `options.html` still show "Testing build <version>". Change it before
    publishing (suggested: just "Version <version>"). Needs a new zip.
 6. **Account setup.** Chrome Web Store developer account (one-time registration fee, about 5 USD, 2-step
@@ -23,7 +24,7 @@ Prepared 2026-11-08. Store rules change; confirm each item in the live dashboard
 
 ## 1. Listing text (both stores)
 
-**Name:** FB Purity Feed Filter
+**Name:** FluffBlock Purity
 
 **Short description (Chrome summary, max 132 chars; current manifest text is 125):**
 Filters Facebook ads, sponsored and suggested posts, Reels, Marketplace posts, Stories, sidebar suggestions and custom words.
@@ -32,7 +33,7 @@ Filters Facebook ads, sponsored and suggested posts, Reels, Marketplace posts, S
 Hide ads, Sponsored and Suggested posts, Reels, Stories and sidebar suggestions on Facebook, and filter posts by your own words. Runs locally. No data collected.
 
 **Detailed description:**
-FB Purity Feed Filter cleans up your Facebook feed. Turn each filter on or off from the toolbar popup:
+FluffBlock Purity cleans up your Facebook feed. Turn each filter on or off from the toolbar popup:
 
 - Ads and Sponsored posts: in the feed, Marketplace and the right sidebar
 - Suggested posts, suggested groups and group chat suggestions
@@ -46,7 +47,7 @@ Privacy: everything runs inside your browser on facebook.com. The extension send
 
 Facebook changes its pages often. If something stops being filtered, use "Export diagnostics" in the popup and send the file to the support email.
 
-FB Purity Feed Filter is an independent project. It is not affiliated with, endorsed by or sponsored by Meta Platforms, Inc. or Facebook.
+FluffBlock Purity is an independent project. It is not affiliated with, endorsed by or sponsored by Meta Platforms, Inc. or Facebook.
 
 **Category:** Chrome: Productivity (or Social & Communication). Firefox: Social & Communication, plus Privacy & Security.
 **Language:** English.
@@ -84,13 +85,13 @@ FB Purity Feed Filter is an independent project. It is not affiliated with, endo
 | Small promo tile 440x280 | optional (listed higher if present) | n/a | Optional |
 | Marquee 1400x560 | optional | n/a | Optional |
 | Privacy policy URL | yes | only if data sent | Steve to host |
-| Zip | `FB-Purity-Feed-Filter-0.1.0.19.zip` | same | Built; rebuild after item 0.5 |
+| Zip | `FluffBlock-Purity-0.1.0.19.zip` | same | Built; rebuild after item 0.5 |
 
 ## 5. Privacy policy (host this text)
 
-**FB Purity Feed Filter: Privacy Policy** (last updated 2026-11-08)
+**FluffBlock Purity: Privacy Policy** (last updated 2026-11-08)
 
-FB Purity Feed Filter ("the extension") is published by Steve Rose (beachie41@gmail.com).
+FluffBlock Purity ("the extension") is published by Steve Rose (beachie41@gmail.com).
 
 **What the extension does with data.** The extension runs only on facebook.com. It reads the web page in your browser to decide which posts to hide or outline. This happens entirely on your device. The extension does not send page content, your Facebook activity, your identity or any other data to the publisher or to any third party. It has no accounts, analytics, advertising or tracking.
 
@@ -106,4 +107,4 @@ FB Purity Feed Filter ("the extension") is published by Steve Rose (beachie41@gm
 
 **Chrome:** developer dashboard > Add new item > upload the zip > fill Store listing (section 1, assets) > Privacy tab (section 2) > Distribution (public, all regions) > Submit for review.
 **Firefox:** addons.mozilla.org > Developer Hub > Submit a New Add-on > "On this site" > upload zip (validator runs) > source code: No > fill listing (sections 1 and 3) > Submit.
-Review takes from hours to several days. A first listing with "Facebook" in or near the name often draws a manual review.
+Review takes from hours to several days. A first listing that targets Facebook may get a manual review.

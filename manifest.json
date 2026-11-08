@@ -1,8 +1,8 @@
 {
   "author": "Steve Rose",
   "manifest_version": 3,
-  "name": "FB Purity Feed Filter",
-  "short_name": "FB Purity Feed Filter",
+  "name": "FluffBlock Purity",
+  "short_name": "FluffBlock",
   "description": "Filters Facebook ads, sponsored and suggested posts, Reels, Marketplace posts, Stories, sidebar suggestions and custom words.",
   "version": "0.1.0.19",
   "minimum_chrome_version": "109",
@@ -16,7 +16,7 @@
     "https://*.facebook.com/*"
   ],
   "action": {
-    "default_title": "FB Purity Feed Filter",
+    "default_title": "FluffBlock Purity",
     "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon16.png",

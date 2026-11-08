@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to FB Purity Feed Filter are listed here. Starting at 0.1.0.2,
+All notable changes to FluffBlock Purity are listed here. Starting at 0.1.0.2,
 the manifest `version` build number is bumped on every change, and the
 distributed zip is named to match, so a filename always tells you exactly
 which build it is. Everything before that shipped under 0.1.0.1, so those

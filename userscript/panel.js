@@ -125,9 +125,9 @@
     const root = host.attachShadow({ mode: "open" });
     root.innerHTML = `
       <style>${CSS}</style>
-      <button class="fab" title="FB Purity Feed Filter settings">FF</button>
+      <button class="fab" title="FluffBlock Purity settings">FF</button>
       <div class="panel" hidden>
-        <h1>FB Purity Feed Filter <small>v${escapeHtml(FFFC_VERSION)}</small></h1>
+        <h1>FluffBlock Purity <small>v${escapeHtml(FFFC_VERSION)}</small></h1>
         ${MAIN.map(([k, l]) => checkbox(k, escapeHtml(l))).join("")}
         <div class="modes">${radios("displayMode", MODES)}</div>
         <details>
@@ -279,7 +279,7 @@
     }
     build();
     if (fffcGM.menu) {
-      fffcGM.menu("FB Purity Feed Filter settings", () => {
+      fffcGM.menu("FluffBlock Purity settings", () => {
         if (panel.hidden) {
           togglePanel();
         }

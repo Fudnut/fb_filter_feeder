@@ -88,7 +88,7 @@ const chrome = (() => {
         try {
           listener(changes, "sync");
         } catch (error) {
-          console.error("[FB Purity Feed Filter]", error);
+          console.error("[FluffBlock Purity]", error);
         }
       }
     }, 0);

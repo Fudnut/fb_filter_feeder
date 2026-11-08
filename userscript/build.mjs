@@ -13,7 +13,7 @@ const manifest = JSON.parse(read("manifest.json"));
 const version = manifest.version;
 
 const header = `// ==UserScript==
-// @name         FB Purity Feed Filter
+// @name         FluffBlock Purity
 // @namespace    https://github.com/Fudnut/feed-bouncer
 // @version      ${version}
 // @description  ${manifest.description}
