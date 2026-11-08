@@ -7,10 +7,10 @@
 (function startFeedFilter() {
   "use strict";
 
-  if (globalThis.__FEED_FILTER_CONTENT_BETA_2__) {
+  if (globalThis.__FEED_FILTER_CONTENT_2__) {
     return;
   }
-  globalThis.__FEED_FILTER_CONTENT_BETA_2__ = true;
+  globalThis.__FEED_FILTER_CONTENT_2__ = true;
   // Patched 2026-07-31: story-containment fallback for header geometry
   // (Reels-format ad cards) + paid-for-by text fallback.
 

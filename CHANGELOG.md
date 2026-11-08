@@ -17,6 +17,10 @@ entries are grouped together and dated instead.
 - The userscript shim maps `storage.local` to its single GM store.
 - Licence changed from MIT to Mozilla Public License 2.0 (`LICENSE`).
 - Add 32 and 64 px icons (recommended by Mozilla).
+- Options page: one-line descriptions for the Favorites, Friends, Groups and
+  Pages home feed choices; AI content label moved under Custom word filters;
+  removed the "Included in this beta" box and other beta wording (internal
+  ids `feed-classifier-beta-2` and the content guard flag lost "beta").
 
 ## 0.1.0.19 - 2026-11-05
 - Fix the false "[feed-bouncer] ... none from literal disclosure text"

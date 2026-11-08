@@ -41,19 +41,19 @@
             <input type="radio" name="homeFeed" value="all">
           </label>
           <label class="activity-row">
-            <span><strong>Favorites</strong></span>
+            <span><strong>Favorites</strong><small>Posts from people and Pages you marked as favorites</small></span>
             <input type="radio" name="homeFeed" value="favorites">
           </label>
           <label class="activity-row">
-            <span><strong>Friends</strong></span>
+            <span><strong>Friends</strong><small>Posts from your friends</small></span>
             <input type="radio" name="homeFeed" value="friends">
           </label>
           <label class="activity-row">
-            <span><strong>Groups</strong></span>
+            <span><strong>Groups</strong><small>Posts from groups you have joined</small></span>
             <input type="radio" name="homeFeed" value="groups">
           </label>
           <label class="activity-row">
-            <span><strong>Pages</strong></span>
+            <span><strong>Pages</strong><small>Posts from Pages you follow</small></span>
             <input type="radio" name="homeFeed" value="pages">
           </label>
         </div>
@@ -90,6 +90,22 @@
           The list remains in browser storage and is never included in
           exported diagnostics.
         </p>
+      </section>
+
+      <section class="activity-card" aria-labelledby="aiContentHeading">
+        <h2 id="aiContentHeading">AI content label</h2>
+        <p>
+          Matches Meta's own "AI info"/"AI content" disclosure text next to
+          the post timestamp. Off by default and unverified against a live
+          Facebook capture - select Debug in the main popup before enabling,
+          then confirm the purple outline lands only on AI-labeled posts.
+        </p>
+        <div class="activity-list">
+          <label class="activity-row">
+            <span><strong>AI content</strong><small>Meta's AI info/AI content disclosure label</small></span>
+            <input id="filterAiContent" type="checkbox">
+          </label>
+        </div>
       </section>
 
       <section class="activity-card" aria-labelledby="activityHeading">
@@ -137,21 +153,6 @@
         </div>
       </section>
 
-      <section class="activity-card" aria-labelledby="aiContentHeading">
-        <h2 id="aiContentHeading">AI content label</h2>
-        <p>
-          Matches Meta's own "AI info"/"AI content" disclosure text next to
-          the post timestamp. Off by default and unverified against a live
-          Facebook capture - select Debug in the main popup before enabling,
-          then confirm the purple outline lands only on AI-labeled posts.
-        </p>
-        <div class="activity-list">
-          <label class="activity-row">
-            <span><strong>AI content</strong><small>Meta's AI info/AI content disclosure label</small></span>
-            <input id="filterAiContent" type="checkbox">
-          </label>
-        </div>
-      </section>
       </div>
 
       <div id="tabPanelSuggested" role="tabpanel" aria-labelledby="tabButtonSuggested" hidden>
@@ -231,7 +232,7 @@
         <div class="status-row">
           <div>
             <h2 id="friendsHeading">Deleted Friends alerts</h2>
-            <p>Retained for compatibility review, but not active in this beta.</p>
+            <p>Retained for compatibility review, but not active in this version.</p>
           </div>
           <input type="checkbox" disabled aria-label="Deleted Friends alerts unavailable">
         </div>
@@ -245,15 +246,6 @@
       </section>
       </div>
 
-      <section class="scope-card">
-        <h2>Included in this beta</h2>
-        <p>
-          Ad and Sponsored, Suggested posts, Reels, Marketplace advertising,
-          the Stories tray, right-sidebar Suggested Groups, right-sidebar
-          Group chats, seven opt-in activity-post filters, six Suggested-post
-          subcategory filters and custom word filtering.
-        </p>
-      </section>
       <p id="saveStatus" class="save-status" aria-live="polite"></p>
     </main>
     <script src="core.js"></script>

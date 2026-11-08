@@ -3,7 +3,7 @@
 (function initFeedFilterCore(global) {
   "use strict";
 
-  const GENERATION = "feed-classifier-beta-2";
+  const GENERATION = "feed-classifier-2";
   if (global.__FFFC_CORE__?.generation === GENERATION) {
     return;
   }
